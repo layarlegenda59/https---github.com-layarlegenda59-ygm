@@ -33,17 +33,17 @@ const links = [
 
 export function SidebarNav() {
   const pathname = usePathname();
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
 
   return (
     <>
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-3">
+        <button onClick={toggleSidebar} className="flex items-center gap-3 w-full text-left">
             <div className="p-2 bg-primary rounded-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground h-6 w-6"><path d="m12 19-7-7 7-7"/><path d="M19 19-7 7"/></svg>
             </div>
             <h2 className="font-headline text-xl font-semibold text-sidebar-foreground">GM Dalem Kaum</h2>
-        </div>
+        </button>
       </SidebarHeader>
       <SidebarContent className="p-2">
         <SidebarMenu>
