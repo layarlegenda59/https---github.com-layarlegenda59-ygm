@@ -26,9 +26,9 @@ import { cn } from '@/lib/utils';
 const links = [
   { href: '/', label: 'Dasbor', icon: LayoutDashboard },
   { href: '/debtors', label: 'Debitur', icon: Users },
+  { href: '/laporan', label: 'Laporan', icon: BookText },
   { href: '/collateral', label: 'Agunan', icon: Gem },
   { href: '/notifications', label: 'Notifikasi', icon: MessageSquare },
-  { href: '/laporan', label: 'Laporan', icon: BookText },
 ];
 
 export function SidebarNav() {
