@@ -42,7 +42,7 @@ export default function NotificationsPage() {
                 <CardDescription>
                   Log semua upaya notifikasi dan statusnya.
                 </CardDescription>
-              </Header>
+              </CardHeader>
               <CardContent>
                 <NotificationLogTable />
               </CardContent>
@@ -55,7 +55,7 @@ export default function NotificationsPage() {
                 <CardDescription>
                   Hubungkan akun WhatsApp Anda untuk mengaktifkan pengiriman notifikasi otomatis.
                 </CardDescription>
-              </CardHeader>
+              </Header>
               <CardContent className="pt-6">
                 <WhatsAppIntegration />
               </CardContent>
