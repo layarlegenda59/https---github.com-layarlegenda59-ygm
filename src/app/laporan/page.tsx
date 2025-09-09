@@ -47,6 +47,7 @@ export default function LaporanPage() {
                         <TableHeader>
                             <TableRow>
                             <TableHead>Nama Debitur</TableHead>
+                            <TableHead>Leasing / BPKB</TableHead>
                             <TableHead>Jatuh Tempo Leasing</TableHead>
                             <TableHead>Jatuh Tempo Pendana</TableHead>
                             <TableHead className="text-right">Status</TableHead>
@@ -56,6 +57,7 @@ export default function LaporanPage() {
                             {sortedDebtors.map((debtor) => (
                             <TableRow key={debtor.id}>
                                 <TableCell className="font-medium">{debtor.name}</TableCell>
+                                <TableCell>{debtor.leasingBpkb || '-'}</TableCell>
                                 <TableCell>{formatDate(debtor.dueDate)}</TableCell>
                                 <TableCell>{formatDate(debtor.funderDueDate)}</TableCell>
                                 <TableCell className="text-right">

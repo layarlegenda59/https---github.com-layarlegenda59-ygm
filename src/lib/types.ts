@@ -7,6 +7,7 @@ export interface Debtor {
   dueDate: string; // Jatuh Tempo Leasing
   funderDueDate: string; // Jatuh Tempo Pendana
   status: 'paid' | 'due' | 'overdue';
+  leasingBpkb?: string;
 }
 
 export interface Collateral {
