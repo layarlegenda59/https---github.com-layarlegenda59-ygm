@@ -16,15 +16,18 @@ import {
   MessageSquare,
   Settings,
   BookText,
+  LogOut,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+
 
 const links = [
-  { href: '/', label: 'Dasbor', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dasbor', icon: LayoutDashboard },
   { href: '/debtors', label: 'Debitur', icon: Users },
   { href: '/laporan', label: 'Laporan', icon: BookText },
   { href: '/collateral', label: 'Agunan', icon: Gem },
@@ -34,6 +37,12 @@ const links = [
 export function SidebarNav() {
   const pathname = usePathname();
   const { state, toggleSidebar } = useSidebar();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // In a real app, you would clear the session/token here
+    router.push('/login');
+  };
 
   return (
     <>
@@ -78,8 +87,8 @@ export function SidebarNav() {
                 <span className="font-semibold text-sidebar-foreground">Admin User</span>
                 <span className="text-xs text-muted-foreground">admin@dalemkaum.com</span>
             </div>
-            <Button variant="ghost" size="icon" className={cn("ml-auto text-muted-foreground hover:text-sidebar-foreground flex-shrink-0 transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>
-                <Settings className="w-5 h-5" />
+            <Button variant="ghost" size="icon" className={cn("ml-auto text-muted-foreground hover:text-sidebar-foreground flex-shrink-0")} onClick={handleLogout} tooltip={{children: 'Keluar'}}>
+                <LogOut className="w-5 h-5" />
             </Button>
          </div>
       </SidebarFooter>

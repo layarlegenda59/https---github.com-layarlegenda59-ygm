@@ -42,7 +42,7 @@ export default function NotificationsPage() {
                 <CardDescription>
                   Log semua upaya notifikasi dan statusnya.
                 </CardDescription>
-              </CardHeader>
+              </Header>
               <CardContent>
                 <NotificationLogTable />
               </CardContent>
