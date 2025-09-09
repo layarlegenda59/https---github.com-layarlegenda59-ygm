@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Settings,
   FileText,
+  BookText,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -29,6 +30,7 @@ const links = [
   { href: '/collateral', label: 'Agunan', icon: Gem },
   { href: '/notifications', label: 'Notifikasi', icon: MessageSquare },
   { href: '/templates', label: 'Template', icon: FileText },
+  { href: '/laporan', label: 'Laporan', icon: BookText },
 ];
 
 export function SidebarNav() {

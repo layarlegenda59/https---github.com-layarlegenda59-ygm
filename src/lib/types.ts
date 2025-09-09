@@ -4,7 +4,8 @@ export interface Debtor {
   phone: string;
   email: string;
   totalDebt: number;
-  dueDate: string;
+  dueDate: string; // Jatuh Tempo Leasing
+  funderDueDate: string; // Jatuh Tempo Pendana
   status: 'paid' | 'due' | 'overdue';
 }
 
