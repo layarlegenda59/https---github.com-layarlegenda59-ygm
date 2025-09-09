@@ -1,0 +1,37 @@
+export interface Debtor {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  totalDebt: number;
+  dueDate: string;
+  status: 'paid' | 'due' | 'overdue';
+}
+
+export interface Collateral {
+  id: string;
+  debtorId: string;
+  debtorName: string;
+  type: 'vehicle' | 'lease';
+  description: string;
+  value: number;
+  serialNumber?: string; // For vehicles
+  address?: string; // For leases/property
+}
+
+export interface NotificationLog {
+  id: string;
+  debtorName: string;
+  type: 'upcoming' | 'due' | 'overdue';
+  channel: 'WhatsApp';
+  sentAt: string;
+  status: 'success' | 'failed';
+}
+
+export interface Template {
+  id: string;
+  name: string;
+  scenario: 'upcoming' | 'due' | 'overdue';
+  content: string;
+  createdAt: string;
+}
