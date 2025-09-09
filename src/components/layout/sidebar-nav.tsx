@@ -15,7 +15,6 @@ import {
   Gem,
   MessageSquare,
   Settings,
-  FileText,
   BookText,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -29,7 +28,6 @@ const links = [
   { href: '/debtors', label: 'Debitur', icon: Users },
   { href: '/collateral', label: 'Agunan', icon: Gem },
   { href: '/notifications', label: 'Notifikasi', icon: MessageSquare },
-  { href: '/templates', label: 'Template', icon: FileText },
   { href: '/laporan', label: 'Laporan', icon: BookText },
 ];
 
