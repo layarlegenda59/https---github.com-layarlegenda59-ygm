@@ -29,7 +29,7 @@ import { Textarea } from '../ui/textarea';
 
 const formSchema = z.object({
   debtorId: z.string().min(1, 'Debitur harus dipilih.'),
-  type: z.enum(['vehicle', 'lease'], { required_error: 'Jenis agunan harus dipilih.' }),
+  type: z.enum(['car', 'motor'], { required_error: 'Jenis agunan harus dipilih.' }),
   description: z.string().min(5, 'Deskripsi minimal 5 karakter.'),
   value: z.coerce.number().min(1, 'Nilai agunan tidak boleh kosong.'),
   serialNumber: z.string().optional(),
@@ -51,7 +51,7 @@ export function CollateralFormSheet({ isOpen, onClose, onSubmit, collateral, deb
     resolver: zodResolver(formSchema),
     defaultValues: {
       debtorId: '',
-      type: 'vehicle',
+      type: 'car',
       description: '',
       value: 0,
       serialNumber: '',
@@ -67,7 +67,7 @@ export function CollateralFormSheet({ isOpen, onClose, onSubmit, collateral, deb
     } else {
       form.reset({
         debtorId: '',
-        type: 'vehicle',
+        type: 'car',
         description: '',
         value: 0,
         serialNumber: '',
@@ -130,8 +130,8 @@ export function CollateralFormSheet({ isOpen, onClose, onSubmit, collateral, deb
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="vehicle">Kendaraan</SelectItem>
-                        <SelectItem value="lease">Properti / Sewa</SelectItem>
+                        <SelectItem value="car">Mobil</SelectItem>
+                        <SelectItem value="motor">Motor</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -164,7 +164,7 @@ export function CollateralFormSheet({ isOpen, onClose, onSubmit, collateral, deb
                   </FormItem>
                 )}
               />
-              {collateralType === 'vehicle' && (
+              {(collateralType === 'car' || collateralType === 'motor') && (
                 <FormField
                     control={form.control}
                     name="serialNumber"
@@ -173,21 +173,6 @@ export function CollateralFormSheet({ isOpen, onClose, onSubmit, collateral, deb
                         <FormLabel>Nomor Seri / Rangka</FormLabel>
                         <FormControl>
                         <Input placeholder="cth. VIN123456789" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-              )}
-               {collateralType === 'lease' && (
-                <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Alamat Properti</FormLabel>
-                        <FormControl>
-                        <Textarea placeholder="cth. Jl. Jenderal Sudirman No. 123, Jakarta" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>

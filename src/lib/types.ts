@@ -12,7 +12,7 @@ export interface Collateral {
   id: string;
   debtorId: string;
   debtorName: string;
-  type: 'vehicle' | 'lease';
+  type: 'car' | 'motor';
   description: string;
   value: number;
   serialNumber?: string; // For vehicles

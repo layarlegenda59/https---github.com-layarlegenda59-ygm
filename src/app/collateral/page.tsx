@@ -2,7 +2,7 @@
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, FileUp, Car, FileText, MoreHorizontal } from "lucide-react";
+import { PlusCircle, FileUp, Car, MoreHorizontal, Bike } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -92,7 +92,7 @@ export default function CollateralPage() {
         <Card>
             <CardHeader>
                 <CardTitle className="font-headline">Aset Agunan</CardTitle>
-                <CardDescription>Kelola aset agunan termasuk kendaraan dan sewa.</CardDescription>
+                <CardDescription>Kelola aset agunan termasuk kendaraan dan properti sewa.</CardDescription>
                 <div className="pt-4">
                     <Input
                         placeholder="Filter berdasarkan debitur atau deskripsi..."
@@ -119,8 +119,8 @@ export default function CollateralPage() {
                             <TableRow key={item.id}>
                                 <TableCell>
                                     <div className="flex items-center gap-2 text-muted-foreground">
-                                        {item.type === 'vehicle' ? <Car className="h-5 w-5" /> : <FileText className="h-5 w-5" />}
-                                        <span className="capitalize">{item.type === 'vehicle' ? 'Kendaraan' : 'Sewa'}</span>
+                                        {item.type === 'car' ? <Car className="h-5 w-5" /> : <Bike className="h-5 w-5" />}
+                                        <span className="capitalize">{item.type === 'car' ? 'Mobil' : 'Motor'}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="font-medium">{item.description}</TableCell>

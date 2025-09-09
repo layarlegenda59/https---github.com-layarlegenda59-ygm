@@ -12,10 +12,9 @@ export const debtors: Debtor[] = [
 ];
 
 export const collaterals: Collateral[] = [
-  { id: 'COL001', debtorId: 'DBT001', debtorName: 'Budi Santoso', type: 'vehicle', description: 'Toyota Avanza 2022', value: 180000000, serialNumber: 'VIN123456789' },
-  { id: 'COL002', debtorId: 'DBT003', debtorName: 'Agus Wijoyo', type: 'lease', description: 'Sewa Ruko 2 Lantai', value: 1500000000, address: 'Jl. Jenderal Sudirman No. 123, Jakarta' },
-  { id: 'COL003', debtorId: 'DBT005', debtorName: 'Eko Prasetyo', type: 'vehicle', description: 'Mitsubishi Pajero Sport 2021', value: 450000000, serialNumber: 'VIN987654321' },
-  { id: 'COL004', debtorId: 'DBT007', debtorName: 'Hadi Nugroho', type: 'vehicle', description: 'Honda Vario 150 2020', value: 22000000, serialNumber: 'VINABC123DEF' },
+  { id: 'COL001', debtorId: 'DBT001', debtorName: 'Budi Santoso', type: 'car', description: 'Toyota Avanza 2022', value: 180000000, serialNumber: 'VIN123456789' },
+  { id: 'COL003', debtorId: 'DBT005', debtorName: 'Eko Prasetyo', type: 'car', description: 'Mitsubishi Pajero Sport 2021', value: 450000000, serialNumber: 'VIN987654321' },
+  { id: 'COL004', debtorId: 'DBT007', debtorName: 'Hadi Nugroho', type: 'motor', description: 'Honda Vario 150 2020', value: 22000000, serialNumber: 'VINABC123DEF' },
 ];
 
 export const notificationLogs: NotificationLog[] = [
