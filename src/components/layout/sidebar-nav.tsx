@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarContent,
+  useSidebar
 } from '@/components/ui/sidebar';
 import {
   LayoutDashboard,
@@ -20,6 +21,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
 
 const links = [
   { href: '/', label: 'Dasbor', icon: LayoutDashboard },
@@ -31,6 +33,7 @@ const links = [
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const { state } = useSidebar();
 
   return (
     <>
@@ -52,7 +55,10 @@ export function SidebarNav() {
                 tooltip={{children: link.label}}
               >
                 <Link href={link.href}>
-                  <link.icon />
+                  <link.icon className={cn(
+                      'transition-transform duration-300 ease-in-out',
+                      state === 'expanded' ? 'group-hover:rotate-[10deg]' : ''
+                    )} />
                   <span>{link.label}</span>
                 </Link>
               </SidebarMenuButton>
