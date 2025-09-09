@@ -7,19 +7,19 @@ import { NotificationLogTable } from "@/components/notifications/log-table";
 export default function NotificationsPage() {
   return (
     <div className="flex flex-col gap-8">
-      <Header title="Notifications" />
+      <Header title="Notifikasi" />
       <main>
         <Tabs defaultValue="scheduler" className="w-full">
           <TabsList className="grid w-full grid-cols-2 md:w-[400px]">
-            <TabsTrigger value="scheduler">Scheduler</TabsTrigger>
-            <TabsTrigger value="log">Notification Log</TabsTrigger>
+            <TabsTrigger value="scheduler">Penjadwal</TabsTrigger>
+            <TabsTrigger value="log">Log Notifikasi</TabsTrigger>
           </TabsList>
           <TabsContent value="scheduler">
             <Card>
               <CardHeader>
-                <CardTitle className="font-headline">Schedule Notification</CardTitle>
+                <CardTitle className="font-headline">Jadwalkan Notifikasi</CardTitle>
                 <CardDescription>
-                  Schedule WhatsApp notifications for upcoming, due, and overdue payments.
+                  Jadwalkan notifikasi WhatsApp untuk pembayaran yang akan datang, jatuh tempo, dan terlambat.
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6">
@@ -30,9 +30,9 @@ export default function NotificationsPage() {
           <TabsContent value="log">
              <Card>
               <CardHeader>
-                <CardTitle className="font-headline">Notification Log</CardTitle>
+                <CardTitle className="font-headline">Log Notifikasi</CardTitle>
                 <CardDescription>
-                  Log of all notification attempts and their statuses.
+                  Log semua upaya notifikasi dan statusnya.
                 </CardDescription>
               </CardHeader>
               <CardContent>

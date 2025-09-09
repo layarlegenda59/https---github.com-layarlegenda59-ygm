@@ -28,24 +28,24 @@ export default function DebtorsPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <Header title="Debtors">
+      <Header title="Debitur">
         <Button variant="outline">
           <FileUp className="mr-2 h-4 w-4" />
-          Import Data
+          Impor Data
         </Button>
         <Button>
           <PlusCircle className="mr-2 h-4 w-4" />
-          Add Debtor
+          Tambah Debitur
         </Button>
       </Header>
       <main>
         <Card>
             <CardHeader>
-                <CardTitle className="font-headline">Debtor Information</CardTitle>
-                <CardDescription>Create, read, update, and delete debtor information.</CardDescription>
+                <CardTitle className="font-headline">Informasi Debitur</CardTitle>
+                <CardDescription>Buat, baca, perbarui, dan hapus informasi debitur.</CardDescription>
                  <div className="pt-4">
                     <Input
-                        placeholder="Filter by name or email..."
+                        placeholder="Filter berdasarkan nama atau email..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="max-w-sm"
@@ -57,12 +57,12 @@ export default function DebtorsPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead className="hidden md:table-cell">Contact</TableHead>
-                            <TableHead className="hidden sm:table-cell text-right">Total Debt</TableHead>
-                            <TableHead className="hidden md:table-cell">Due Date</TableHead>
+                            <TableHead>Nama</TableHead>
+                            <TableHead className="hidden md:table-cell">Kontak</TableHead>
+                            <TableHead className="hidden sm:table-cell text-right">Total Utang</TableHead>
+                            <TableHead className="hidden md:table-cell">Jatuh Tempo</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead><span className="sr-only">Actions</span></TableHead>
+                            <TableHead><span className="sr-only">Aksi</span></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -75,8 +75,8 @@ export default function DebtorsPage() {
                                         <span className="text-muted-foreground text-sm">{debtor.phone}</span>
                                     </div>
                                 </TableCell>
-                                <TableCell className="hidden sm:table-cell text-right">${debtor.totalDebt.toLocaleString()}</TableCell>
-                                <TableCell className="hidden md:table-cell">{new Date(debtor.dueDate).toLocaleDateString()}</TableCell>
+                                <TableCell className="hidden sm:table-cell text-right">Rp{debtor.totalDebt.toLocaleString('id-ID')}</TableCell>
+                                <TableCell className="hidden md:table-cell">{new Date(debtor.dueDate).toLocaleDateString('id-ID')}</TableCell>
                                 <TableCell>
                                     <Badge
                                         className={cn(
@@ -87,7 +87,7 @@ export default function DebtorsPage() {
                                         )}
                                         variant="secondary"
                                     >
-                                        {debtor.status}
+                                        {debtor.status === 'paid' ? 'Lunas' : debtor.status === 'due' ? 'Jatuh Tempo' : 'Tunggakan'}
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-right">
@@ -95,13 +95,13 @@ export default function DebtorsPage() {
                                     <DropdownMenuTrigger asChild>
                                         <Button aria-haspopup="true" size="icon" variant="ghost">
                                         <MoreHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
+                                        <span className="sr-only">Buka menu</span>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                                        <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                                        <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                        <DropdownMenuItem>Ubah</DropdownMenuItem>
+                                        <DropdownMenuItem className="text-destructive">Hapus</DropdownMenuItem>
                                     </DropdownMenuContent>
                                     </DropdownMenu>
                                 </TableCell>

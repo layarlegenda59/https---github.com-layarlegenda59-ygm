@@ -17,7 +17,12 @@ import {
 import { debtors } from "@/lib/data"
 
 const chartData = debtors.reduce((acc, debtor) => {
-  const status = debtor.status.charAt(0).toUpperCase() + debtor.status.slice(1);
+  const statusMap: { [key: string]: string } = {
+    paid: 'Lunas',
+    due: 'Jatuh Tempo',
+    overdue: 'Tunggakan'
+  };
+  const status = statusMap[debtor.status];
   const existing = acc.find(item => item.name === status);
   if (existing) {
     existing.total += debtor.totalDebt;
@@ -29,18 +34,18 @@ const chartData = debtors.reduce((acc, debtor) => {
 
 const chartConfig = {
   total: {
-    label: "Total Debt",
+    label: "Total Utang",
   },
   paid: {
-    label: "Paid",
+    label: "Lunas",
     color: "hsl(var(--chart-2))",
   },
   due: {
-    label: "Due",
+    label: "Jatuh Tempo",
     color: "hsl(var(--chart-4))",
   },
   overdue: {
-    label: "Overdue",
+    label: "Tunggakan",
     color: "hsl(var(--destructive))",
   },
 }
@@ -49,8 +54,8 @@ export function DebtOverviewChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Debt Overview</CardTitle>
-        <CardDescription>A summary of total debt by status.</CardDescription>
+        <CardTitle className="font-headline">Ringkasan Utang</CardTitle>
+        <CardDescription>Ringkasan total utang berdasarkan status.</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px] w-full">
@@ -67,7 +72,7 @@ export function DebtOverviewChart() {
               fontSize={12}
               tickLine={false}
               axisLine={false}
-              tickFormatter={(value) => `$${Number(value) / 1000}k`}
+              tickFormatter={(value) => `Rp${Number(value) / 1000}k`}
             />
             <ChartTooltip
               cursor={false}

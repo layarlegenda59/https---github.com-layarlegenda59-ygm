@@ -21,16 +21,16 @@ export function UpcomingDues() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Upcoming Due Dates</CardTitle>
-        <CardDescription>A list of debtors with upcoming or overdue payments.</CardDescription>
+        <CardTitle className="font-headline">Jatuh Tempo Mendatang</CardTitle>
+        <CardDescription>Daftar debitur dengan pembayaran mendatang atau terlambat.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Debtor</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-              <TableHead className="hidden sm:table-cell">Due Date</TableHead>
+              <TableHead>Debitur</TableHead>
+              <TableHead className="text-right">Jumlah</TableHead>
+              <TableHead className="hidden sm:table-cell">Jatuh Tempo</TableHead>
               <TableHead className="text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
@@ -46,8 +46,8 @@ export function UpcomingDues() {
                     <div className="font-medium">{debtor.name}</div>
                   </div>
                 </TableCell>
-                <TableCell className="text-right">${debtor.totalDebt.toLocaleString()}</TableCell>
-                <TableCell className="hidden sm:table-cell">{new Date(debtor.dueDate).toLocaleDateString()}</TableCell>
+                <TableCell className="text-right">Rp{debtor.totalDebt.toLocaleString('id-ID')}</TableCell>
+                <TableCell className="hidden sm:table-cell">{new Date(debtor.dueDate).toLocaleDateString('id-ID')}</TableCell>
                 <TableCell className="text-right">
                   <Badge
                     className={cn(
@@ -58,7 +58,7 @@ export function UpcomingDues() {
                     )}
                     variant="secondary"
                   >
-                    {debtor.status}
+                    {debtor.status === 'paid' ? 'Lunas' : debtor.status === 'due' ? 'Jatuh Tempo' : 'Tunggakan'}
                   </Badge>
                 </TableCell>
               </TableRow>

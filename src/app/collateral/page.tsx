@@ -25,24 +25,24 @@ export default function CollateralPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <Header title="Collateral">
+      <Header title="Agunan">
         <Button variant="outline">
           <FileUp className="mr-2 h-4 w-4" />
-          Import Data
+          Impor Data
         </Button>
         <Button>
           <PlusCircle className="mr-2 h-4 w-4" />
-          Add Collateral
+          Tambah Agunan
         </Button>
       </Header>
       <main>
         <Card>
             <CardHeader>
-                <CardTitle className="font-headline">Collateral Assets</CardTitle>
-                <CardDescription>Manage collateral assets including vehicles and leases.</CardDescription>
+                <CardTitle className="font-headline">Aset Agunan</CardTitle>
+                <CardDescription>Kelola aset agunan termasuk kendaraan dan sewa.</CardDescription>
                 <div className="pt-4">
                     <Input
-                        placeholder="Filter by debtor or description..."
+                        placeholder="Filter berdasarkan debitur atau deskripsi..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="max-w-sm"
@@ -54,11 +54,11 @@ export default function CollateralPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Description</TableHead>
-                                <TableHead className="hidden sm:table-cell">Debtor</TableHead>
-                                <TableHead className="text-right">Value</TableHead>
-                                <TableHead><span className="sr-only">Actions</span></TableHead>
+                                <TableHead>Jenis</TableHead>
+                                <TableHead>Deskripsi</TableHead>
+                                <TableHead className="hidden sm:table-cell">Debitur</TableHead>
+                                <TableHead className="text-right">Nilai</TableHead>
+                                <TableHead><span className="sr-only">Aksi</span></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -67,24 +67,24 @@ export default function CollateralPage() {
                                 <TableCell>
                                     <div className="flex items-center gap-2 text-muted-foreground">
                                         {item.type === 'vehicle' ? <Car className="h-5 w-5" /> : <FileText className="h-5 w-5" />}
-                                        <span className="capitalize">{item.type}</span>
+                                        <span className="capitalize">{item.type === 'vehicle' ? 'Kendaraan' : 'Sewa'}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="font-medium">{item.description}</TableCell>
                                 <TableCell className="hidden sm:table-cell">{item.debtorName}</TableCell>
-                                <TableCell className="text-right">${item.value.toLocaleString()}</TableCell>
+                                <TableCell className="text-right">Rp{item.value.toLocaleString('id-ID')}</TableCell>
                                 <TableCell className="text-right">
                                     <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button aria-haspopup="true" size="icon" variant="ghost">
                                         <MoreHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
+                                        <span className="sr-only">Buka menu</span>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                                        <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                                        <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                        <DropdownMenuItem>Ubah</DropdownMenuItem>
+                                        <DropdownMenuItem className="text-destructive">Hapus</DropdownMenuItem>
                                     </DropdownMenuContent>
                                     </DropdownMenu>
                                 </TableCell>

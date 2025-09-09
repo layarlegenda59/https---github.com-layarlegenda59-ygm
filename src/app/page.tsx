@@ -6,7 +6,7 @@ import { DebtOverviewChart } from "@/components/dashboard/debt-overview-chart";
 export default function Home() {
   return (
     <div className="flex flex-col gap-8">
-      <Header title="Dashboard" />
+      <Header title="Dasbor" />
       <main className="space-y-6">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCards />

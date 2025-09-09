@@ -14,6 +14,7 @@ import {
   Gem,
   MessageSquare,
   Settings,
+  FileText,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -21,11 +22,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '../ui/button';
 
 const links = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/debtors', label: 'Debtors', icon: Users },
-  { href: '/collateral', label: 'Collateral', icon: Gem },
-  { href: '/notifications', label: 'Notifications', icon: MessageSquare },
-  { href: '/templates', label: 'Templates', icon: MessageSquare },
+  { href: '/', label: 'Dasbor', icon: LayoutDashboard },
+  { href: '/debtors', label: 'Debitur', icon: Users },
+  { href: '/collateral', label: 'Agunan', icon: Gem },
+  { href: '/notifications', label: 'Notifikasi', icon: MessageSquare },
+  { href: '/templates', label: 'Template', icon: FileText },
 ];
 
 export function SidebarNav() {
@@ -62,7 +63,7 @@ export function SidebarNav() {
       <SidebarFooter className="p-4 mt-auto border-t border-sidebar-border">
          <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border">
-                <AvatarImage src="https://picsum.photos/100" alt="User" data-ai-hint="person portrait" />
+                <AvatarImage src="https://picsum.photos/100" alt="Pengguna" data-ai-hint="person portrait" />
                 <AvatarFallback>AD</AvatarFallback>
             </Avatar>
             <div className="flex flex-col text-sm">

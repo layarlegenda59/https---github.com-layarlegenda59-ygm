@@ -7,9 +7,9 @@ export function TemplateList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Saved Templates</CardTitle>
+        <CardTitle className="font-headline">Template Tersimpan</CardTitle>
         <CardDescription>
-          Your collection of WhatsApp message templates.
+          Koleksi template pesan WhatsApp Anda.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -19,7 +19,7 @@ export function TemplateList() {
                     <div className="flex justify-between items-start">
                         <div>
                             <CardTitle className="text-base font-semibold">{template.name}</CardTitle>
-                            <CardDescription className="text-xs pt-1">Created on {new Date(template.createdAt).toLocaleDateString()}</CardDescription>
+                            <CardDescription className="text-xs pt-1">Dibuat pada {new Date(template.createdAt).toLocaleDateString('id-ID')}</CardDescription>
                         </div>
                         <Badge variant="outline" className="capitalize">{template.scenario}</Badge>
                     </div>
@@ -28,8 +28,8 @@ export function TemplateList() {
                     <p className="text-sm text-muted-foreground bg-secondary p-4 rounded-md">{template.content}</p>
                 </CardContent>
                 <CardFooter className="gap-2">
-                    <Button variant="ghost" size="sm">Edit</Button>
-                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">Delete</Button>
+                    <Button variant="ghost" size="sm">Ubah</Button>
+                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">Hapus</Button>
                 </CardFooter>
             </Card>
         ))}

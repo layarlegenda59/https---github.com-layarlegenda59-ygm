@@ -19,8 +19,8 @@ export function NotificationLogTable() {
     
     const handleRetry = (logId: string) => {
         toast({
-            title: "Retrying notification...",
-            description: `Attempting to resend notification ${logId}.`
+            title: "Mengirim ulang notifikasi...",
+            description: `Mencoba mengirim ulang notifikasi ${logId}.`
         });
     }
 
@@ -29,11 +29,11 @@ export function NotificationLogTable() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                    <TableHead>Debtor</TableHead>
-                    <TableHead className="hidden sm:table-cell">Type</TableHead>
-                    <TableHead>Sent At</TableHead>
+                    <TableHead>Debitur</TableHead>
+                    <TableHead className="hidden sm:table-cell">Tipe</TableHead>
+                    <TableHead>Dikirim Pada</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="text-right">Aksi</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -41,17 +41,17 @@ export function NotificationLogTable() {
                     <TableRow key={log.id}>
                         <TableCell className="font-medium">{log.debtorName}</TableCell>
                         <TableCell className="hidden sm:table-cell"><span className="capitalize">{log.type}</span></TableCell>
-                        <TableCell>{log.sentAt}</TableCell>
+                        <TableCell>{new Date(log.sentAt).toLocaleString('id-ID')}</TableCell>
                         <TableCell>
                             <Badge className={cn('capitalize', log.status === 'failed' ? 'bg-destructive/80 text-destructive-foreground' : 'bg-green-400/80 text-green-900')} variant={log.status === 'failed' ? 'destructive' : 'secondary'}>
-                                {log.status}
+                                {log.status === 'success' ? 'Sukses' : 'Gagal'}
                             </Badge>
                         </TableCell>
                         <TableCell className="text-right">
                             {log.status === 'failed' && (
                                 <Button variant="outline" size="sm" onClick={() => handleRetry(log.id)}>
                                     <RefreshCcw className="mr-2 h-4 w-4" />
-                                    Retry
+                                    Coba Lagi
                                 </Button>
                             )}
                         </TableCell>
