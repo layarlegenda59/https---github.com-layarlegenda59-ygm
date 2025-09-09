@@ -13,7 +13,6 @@ import {
   Users,
   Gem,
   MessageSquare,
-  BotMessageSquare,
   Settings,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -26,7 +25,7 @@ const links = [
   { href: '/debtors', label: 'Debtors', icon: Users },
   { href: '/collateral', label: 'Collateral', icon: Gem },
   { href: '/notifications', label: 'Notifications', icon: MessageSquare },
-  { href: '/templates', label: 'Templates', icon: BotMessageSquare },
+  { href: '/templates', label: 'Templates', icon: MessageSquare },
 ];
 
 export function SidebarNav() {
