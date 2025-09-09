@@ -12,16 +12,69 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { collaterals as allCollaterals } from "@/lib/data";
+import { collaterals as initialCollaterals, debtors } from "@/lib/data";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { Collateral } from "@/lib/types";
+import { CollateralFormSheet } from "@/components/collateral/collateral-form-sheet";
+import { DeleteCollateralDialog } from "@/components/collateral/delete-collateral-dialog";
 
 export default function CollateralPage() {
     const [searchTerm, setSearchTerm] = useState('');
-    const filteredCollaterals = allCollaterals.filter(c =>
+    const [collaterals, setCollaterals] = useState<Collateral[]>(initialCollaterals);
+    const [selectedCollateral, setSelectedCollateral] = useState<Collateral | null>(null);
+    const [isFormOpen, setFormOpen] = useState(false);
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const filteredCollaterals = collaterals.filter(c =>
         c.debtorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleAdd = () => {
+        setSelectedCollateral(null);
+        setFormOpen(true);
+    };
+
+    const handleEdit = (collateral: Collateral) => {
+        setSelectedCollateral(collateral);
+        setFormOpen(true);
+    };
+
+    const handleDelete = (collateral: Collateral) => {
+        setSelectedCollateral(collateral);
+        setDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (selectedCollateral) {
+            setCollaterals(collaterals.filter(c => c.id !== selectedCollateral.id));
+            setDeleteDialogOpen(false);
+            setSelectedCollateral(null);
+        }
+    };
+    
+    const handleFormSubmit = (collateralData: Omit<Collateral, 'id' | 'debtorName'> & { id?: string }) => {
+        const debtor = debtors.find(d => d.id === collateralData.debtorId);
+        if (!debtor) return; 
+
+        if (selectedCollateral) {
+            // Update
+            setCollaterals(collaterals.map(c =>
+                c.id === selectedCollateral.id ? { ...c, ...collateralData, debtorName: debtor.name, id: c.id } : c
+            ));
+        } else {
+            // Create
+            const newCollateral: Collateral = {
+                ...collateralData,
+                id: `COL${Date.now()}`,
+                debtorName: debtor.name,
+            };
+            setCollaterals([newCollateral, ...collaterals]);
+        }
+        setFormOpen(false);
+        setSelectedCollateral(null);
+    };
 
   return (
     <div className="flex flex-col gap-8">
@@ -30,7 +83,7 @@ export default function CollateralPage() {
           <FileUp className="mr-2 h-4 w-4" />
           Impor Data
         </Button>
-        <Button>
+        <Button onClick={handleAdd}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Tambah Agunan
         </Button>
@@ -83,8 +136,8 @@ export default function CollateralPage() {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                                        <DropdownMenuItem>Ubah</DropdownMenuItem>
-                                        <DropdownMenuItem className="text-destructive">Hapus</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleEdit(item)}>Ubah</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleDelete(item)} className="text-destructive">Hapus</DropdownMenuItem>
                                     </DropdownMenuContent>
                                     </DropdownMenu>
                                 </TableCell>
@@ -96,6 +149,19 @@ export default function CollateralPage() {
             </CardContent>
         </Card>
       </main>
+      <CollateralFormSheet
+        isOpen={isFormOpen}
+        onClose={() => { setFormOpen(false); setSelectedCollateral(null); }}
+        onSubmit={handleFormSubmit}
+        collateral={selectedCollateral}
+        debtors={debtors}
+      />
+      <DeleteCollateralDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={confirmDelete}
+        collateralDescription={selectedCollateral?.description || ''}
+      />
     </div>
   );
 }
