@@ -12,22 +12,3 @@ export interface Debtor {
   leasingBpkb: string | null;
   funder: string | null;
 }
-
-export interface Collateral {
-  id: string;
-  debtorId: string;
-  debtorName: string;
-  type: 'car' | 'motor';
-  description: string;
-  value: number;
-  serialNumber?: string; // For vehicles
-  address?: string; // For leases/property
-}
-
-export interface Template {
-  id: string;
-  name: string;
-  scenario: 'upcoming' | 'due' | 'overdue';
-  content: string;
-  createdAt: string;
-}
