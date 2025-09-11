@@ -38,7 +38,10 @@ export default function DebtorsPage() {
   const [collateralSearchTerm, setCollateralSearchTerm] = useState('');
 
 
-  const filteredDebtors = debtors.filter(debtor =>
+  const filteredDebtors = debtors.map(debtor => {
+    const debtorCollaterals = initialCollaterals.filter(c => c.debtorId === debtor.id);
+    return { ...debtor, collaterals: debtorCollaterals };
+  }).filter(debtor =>
     debtor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     debtor.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -194,9 +197,9 @@ export default function DebtorsPage() {
                         <TableHeader>
                             <TableRow>
                             <TableHead>Nama</TableHead>
-                            <TableHead className="hidden md:table-cell">Kontak</TableHead>
-                            <TableHead className="hidden sm:table-cell text-right">Total Utang</TableHead>
-                            <TableHead className="hidden md:table-cell">Jatuh Tempo</TableHead>
+                            <TableHead className="hidden md:table-cell">Jenis</TableHead>
+                            <TableHead className="hidden sm:table-cell">Deskripsi</TableHead>
+                            <TableHead className="hidden md:table-cell text-right">Nilai</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead><span className="sr-only">Aksi</span></TableHead>
                             </TableRow>
@@ -206,13 +209,26 @@ export default function DebtorsPage() {
                             <TableRow key={debtor.id}>
                                 <TableCell className="font-medium">{debtor.name}</TableCell>
                                 <TableCell className="hidden md:table-cell">
-                                    <div className="flex flex-col">
-                                        <span>{debtor.email}</span>
-                                        <span className="text-muted-foreground text-sm">{debtor.phone}</span>
+                                    <div className="flex flex-col gap-1">
+                                        {debtor.collaterals.length > 0 ? debtor.collaterals.map(c => (
+                                            <span key={c.id} className="capitalize">{c.type === 'car' ? 'Mobil' : 'Motor'}</span>
+                                        )) : <span className="text-muted-foreground">-</span>}
                                     </div>
                                 </TableCell>
-                                <TableCell className="hidden sm:table-cell text-right">Rp{debtor.totalDebt.toLocaleString('id-ID')}</TableCell>
-                                <TableCell className="hidden md:table-cell">{new Date(debtor.dueDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
+                                <TableCell className="hidden sm:table-cell">
+                                     <div className="flex flex-col gap-1">
+                                        {debtor.collaterals.length > 0 ? debtor.collaterals.map(c => (
+                                            <span key={c.id}>{c.description}</span>
+                                        )) : <span className="text-muted-foreground">-</span>}
+                                    </div>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell text-right">
+                                     <div className="flex flex-col gap-1">
+                                        {debtor.collaterals.length > 0 ? debtor.collaterals.map(c => (
+                                            <span key={c.id}>Rp{c.value.toLocaleString('id-ID')}</span>
+                                        )) : <span className="text-muted-foreground">-</span>}
+                                    </div>
+                                </TableCell>
                                 <TableCell>
                                     <Badge
                                         className={cn(
@@ -338,3 +354,5 @@ export default function DebtorsPage() {
     </div>
   );
 }
+
+    
