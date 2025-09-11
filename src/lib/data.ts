@@ -13,8 +13,13 @@ export const debtors: Debtor[] = [
 
 export const collaterals: Collateral[] = [
   { id: 'COL001', debtorId: 'DBT001', debtorName: 'Budi Santoso', type: 'car', description: 'Toyota Avanza 2022', value: 180000000, serialNumber: 'VIN123456789' },
-  { id: 'COL003', debtorId: 'DBT005', debtorName: 'Eko Prasetyo', type: 'car', description: 'Mitsubishi Pajero Sport 2021', value: 450000000, serialNumber: 'VIN987654321' },
-  { id: 'COL004', debtorId: 'DBT007', debtorName: 'Hadi Nugroho', type: 'motor', description: 'Honda Vario 150 2020', value: 22000000, serialNumber: 'VINABC123DEF' },
+  { id: 'COL002', debtorId: 'DBT002', debtorName: 'Siti Aminah', type: 'motor', description: 'Yamaha NMAX 2021', value: 30000000, serialNumber: 'VIN112233445' },
+  { id: 'COL003', debtorId: 'DBT003', debtorName: 'Agus Wijoyo', type: 'motor', description: 'Honda Beat 2023', value: 18000000, serialNumber: 'VIN223344556' },
+  { id: 'COL004', debtorId: 'DBT004', debtorName: 'Dewi Lestari', type: 'car', description: 'Daihatsu Terios 2020', value: 210000000, serialNumber: 'VIN334455667' },
+  { id: 'COL005', debtorId: 'DBT005', debtorName: 'Eko Prasetyo', type: 'car', description: 'Mitsubishi Pajero Sport 2021', value: 450000000, serialNumber: 'VIN987654321' },
+  { id: 'COL006', debtorId: 'DBT006', debtorName: 'Rina Marlina', type: 'motor', description: 'Kawasaki Ninja 250', value: 65000000, serialNumber: 'VIN445566778' },
+  { id: 'COL007', debtorId: 'DBT007', debtorName: 'Hadi Nugroho', type: 'motor', description: 'Honda Vario 150 2020', value: 22000000, serialNumber: 'VINABC123DEF' },
+  { id: 'COL008', debtorId: 'DBT008', debtorName: 'Yulia Sari', type: 'car', description: 'Honda Brio Satya', value: 150000000, serialNumber: 'VIN556677889' },
 ];
 
 export const notificationLogs: NotificationLog[] = [
