@@ -4,21 +4,42 @@ import { Bell } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Debtor } from '@/lib/types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import Link from 'next/link';
+import { differenceInDays, parseISO } from 'date-fns';
 
 interface NotificationBellProps {
   debtors: Debtor[];
 }
 
 export function NotificationBell({ debtors }: NotificationBellProps) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const notifications = debtors
-    .filter(
-      (debtor) => debtor.status === 'due' || debtor.status === 'overdue'
-    )
+    .filter((debtor) => {
+      if (debtor.status === 'paid') return false;
+      const dueDate = parseISO(debtor.dueDate);
+      const daysUntilDue = differenceInDays(dueDate, today);
+      // Tampilkan jika sudah lewat jatuh tempo (overdue) atau akan jatuh tempo dalam 3 hari.
+      return daysUntilDue <= 3;
+    })
     .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
   const notificationCount = notifications.length;
+  
+  const getNotificationText = (dueDate: string) => {
+    const dueDateObj = parseISO(dueDate);
+    const daysDiff = differenceInDays(dueDateObj, today);
+
+    if (daysDiff < 0) {
+      return `Telah jatuh tempo ${Math.abs(daysDiff)} hari lalu.`;
+    }
+    if (daysDiff === 0) {
+      return 'Jatuh tempo hari ini.';
+    }
+    return `Jatuh tempo dalam ${daysDiff} hari.`;
+  };
 
   return (
     <Popover>
@@ -48,7 +69,7 @@ export function NotificationBell({ debtors }: NotificationBellProps) {
                                 <div className="text-sm">
                                     <p className="font-medium">{debtor.name}</p>
                                     <p className="text-muted-foreground">
-                                        Jatuh tempo dalam {Math.ceil((new Date(debtor.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} hari
+                                        {getNotificationText(debtor.dueDate)}
                                     </p>
                                 </div>
                             </div>
