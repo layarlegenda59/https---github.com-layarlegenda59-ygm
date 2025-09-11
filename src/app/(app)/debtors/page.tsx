@@ -103,7 +103,6 @@ export default function DebtorsPage() {
   };
 
   const handleDebtorFormSubmit = async (debtorData: Omit<Debtor, 'id' | 'created_at'>) => {
-    // Simple status logic based on due date
     const dueDate = new Date(debtorData.dueDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -115,7 +114,13 @@ export default function DebtorsPage() {
         status = 'overdue';
     }
 
-    const dataToSubmit = { ...debtorData, status, police_number: debtorData.policeNumber };
+    const { policeNumber, ...restData } = debtorData;
+
+    const dataToSubmit = { 
+        ...restData, 
+        status, 
+        police_number: policeNumber 
+    };
     
     if (selectedDebtor) {
       // Update
@@ -125,6 +130,7 @@ export default function DebtorsPage() {
         .match({ id: selectedDebtor.id });
 
       if (error) {
+        console.error('Update error:', error);
         toast({ title: "Gagal memperbarui", description: error.message, variant: "destructive" });
       } else {
         toast({ title: "Berhasil", description: "Data debitur telah diperbarui." });
@@ -136,6 +142,7 @@ export default function DebtorsPage() {
         .insert([dataToSubmit]);
 
       if (error) {
+        console.error('Insert error:', error);
         toast({ title: "Gagal menambah data", description: error.message, variant: "destructive" });
       } else {
         toast({ title: "Berhasil", description: "Debitur baru telah ditambahkan." });
