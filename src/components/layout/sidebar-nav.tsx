@@ -83,7 +83,7 @@ export function SidebarNav() {
               <div className="p-2 bg-primary rounded-lg flex-shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground h-6 w-6"><path d="m12 19-7-7 7-7"/><path d="M19 19-7 7"/></svg>
               </div>
-              <h2 className={cn("font-headline text-xl font-semibold text-sidebar-foreground truncate transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>GM Dalem Kaum</h2>
+              <h2 className={cn("font-headline text-xl font-semibold text-sidebar-foreground truncate transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>YGM</h2>
           </Button>
         </div>
       </SidebarHeader>

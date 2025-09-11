@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'GM Dalem Kaum',
+  title: 'YGM',
   description: 'Sistem Manajemen dan Notifikasi Debitur',
 };
 
