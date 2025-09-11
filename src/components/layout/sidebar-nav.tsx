@@ -32,6 +32,7 @@ const links = [
   { href: '/laporan', label: 'Laporan', icon: BookText },
   { href: '/collateral', label: 'Agunan', icon: Gem },
   { href: '/notifications', label: 'Notifikasi', icon: MessageSquare },
+  { href: '/settings', label: 'Pengaturan', icon: Settings },
 ];
 
 export function SidebarNav() {
