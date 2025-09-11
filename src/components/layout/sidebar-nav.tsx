@@ -13,7 +13,6 @@ import {
 import {
   LayoutDashboard,
   Users,
-  Gem,
   FileText,
   MessageSquare,
   Settings,
@@ -29,8 +28,7 @@ import { useRouter } from 'next/navigation';
 
 const links = [
   { href: '/dashboard', label: 'Dasbor', icon: LayoutDashboard },
-  { href: '/debtors', label: 'Debitur', icon: Users },
-  { href: '/collateral', label: 'Agunan', icon: Gem },
+  { href: '/debtors', label: 'Debitur & Agunan', icon: Users },
   { href: '/report', label: 'Laporan', icon: FileText },
   { href: '/notifications', label: 'Notifikasi', icon: MessageSquare },
   { href: '/settings', label: 'Pengaturan', icon: Settings },
