@@ -36,6 +36,7 @@ const formSchema = z.object({
   name: z.string().min(2, 'Nama minimal 2 karakter.'),
   email: z.string().email('Format email tidak valid.').optional().or(z.literal('')),
   phone: z.string().min(10, 'Nomor telepon minimal 10 digit.'),
+  policeNumber: z.string().optional(),
   totalDebt: z.coerce.number().min(0, 'Total utang tidak boleh negatif.'),
   dueDate: z.date({ required_error: 'Tanggal jatuh tempo leasing harus diisi.' }),
   funderDueDate: z.date({ required_error: 'Tanggal jatuh tempo pendana harus diisi.' }),
@@ -59,6 +60,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
       name: '',
       email: '',
       phone: '',
+      policeNumber: '',
       totalDebt: 0,
       leasingBpkb: '',
       funder: '',
@@ -70,6 +72,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
       if (debtor) {
         form.reset({
           ...debtor,
+          policeNumber: debtor.policeNumber || '',
           dueDate: new Date(debtor.dueDate),
           funderDueDate: new Date(debtor.funderDueDate),
         });
@@ -78,6 +81,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
           name: '',
           email: '',
           phone: '',
+          policeNumber: '',
           totalDebt: 0,
           dueDate: new Date(),
           funderDueDate: new Date(),
@@ -144,6 +148,19 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
                     <FormLabel>Nomor Telepon</FormLabel>
                     <FormControl>
                       <Input placeholder="cth. 081234567890" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="policeNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>No. Polisi</FormLabel>
+                    <FormControl>
+                      <Input placeholder="cth. B 1234 ABC" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

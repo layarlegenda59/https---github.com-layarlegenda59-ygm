@@ -11,4 +11,5 @@ export interface Debtor {
   status: 'paid' | 'due' | 'overdue';
   leasingBpkb: string | null;
   funder: string | null;
+  policeNumber: string | null;
 }

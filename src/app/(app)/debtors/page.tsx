@@ -3,7 +3,7 @@
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, FileUp, MoreHorizontal, Loader2 } from "lucide-react";
+import { PlusCircle, MoreHorizontal, Loader2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -58,7 +58,8 @@ export default function DebtorsPage() {
 
   const filteredDebtors = debtors.filter(debtor =>
     debtor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (debtor.email && debtor.email.toLowerCase().includes(searchTerm.toLowerCase()))
+    (debtor.email && debtor.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (debtor.policeNumber && debtor.policeNumber.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleAddDebtor = () => {
@@ -114,7 +115,7 @@ export default function DebtorsPage() {
         status = 'overdue';
     }
 
-    const dataToSubmit = { ...debtorData, status };
+    const dataToSubmit = { ...debtorData, status, police_number: debtorData.policeNumber };
     
     if (selectedDebtor) {
       // Update
@@ -169,7 +170,7 @@ export default function DebtorsPage() {
                 <CardDescription>Kelola data semua debitur yang terdaftar dalam sistem.</CardDescription>
                  <div className="pt-4">
                     <Input
-                        placeholder="Filter berdasarkan nama atau email..."
+                        placeholder="Filter berdasarkan nama, email, atau no. polisi..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="max-w-sm"
@@ -182,7 +183,7 @@ export default function DebtorsPage() {
                         <TableHeader>
                             <TableRow>
                             <TableHead>Nama</TableHead>
-                            <TableHead className="hidden sm:table-cell">Kontak</TableHead>
+                            <TableHead className="hidden sm:table-cell">No. Polisi</TableHead>
                             <TableHead className="hidden md:table-cell text-right">Total Utang</TableHead>
                             <TableHead className="hidden md:table-cell">Jatuh Tempo</TableHead>
                             <TableHead>Status</TableHead>
@@ -206,12 +207,12 @@ export default function DebtorsPage() {
                             ) : (
                                 filteredDebtors.map((debtor) => (
                                 <TableRow key={debtor.id}>
-                                    <TableCell className="font-medium">{debtor.name}</TableCell>
+                                    <TableCell>
+                                        <div className="font-medium">{debtor.name}</div>
+                                        <div className="text-sm text-muted-foreground">{debtor.phone}</div>
+                                    </TableCell>
                                     <TableCell className="hidden sm:table-cell">
-                                        <div className="flex flex-col">
-                                            <span>{debtor.email}</span>
-                                            <span className="text-muted-foreground">{debtor.phone}</span>
-                                        </div>
+                                        {debtor.policeNumber || '-'}
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell text-right">
                                         Rp{debtor.totalDebt.toLocaleString('id-ID')}
