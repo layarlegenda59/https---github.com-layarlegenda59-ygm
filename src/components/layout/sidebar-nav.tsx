@@ -17,6 +17,7 @@ import {
   MessageSquare,
   Settings,
   LogOut,
+  Gem,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -29,6 +30,7 @@ import { useRouter } from 'next/navigation';
 const links = [
   { href: '/dashboard', label: 'Dasbor', icon: LayoutDashboard },
   { href: '/debtors', label: 'Debitur', icon: Users },
+  { href: '/collateral', label: 'Agunan', icon: Gem },
   { href: '/report', label: 'Laporan', icon: FileText },
   { href: '/notifications', label: 'Notifikasi', icon: MessageSquare },
   { href: '/settings', label: 'Pengaturan', icon: Settings },
