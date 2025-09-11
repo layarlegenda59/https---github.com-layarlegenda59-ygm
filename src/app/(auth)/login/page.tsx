@@ -13,26 +13,19 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
+  
   const handleLogin = (event: React.FormEvent) => {
     event.preventDefault()
-    setError('');
-
-    if (email === 'admin@gm.com' && password === 'gm123') {
-      // In a real app, you'd have actual auth logic here.
-      // For this prototype, we'll just redirect to the dashboard.
-      router.push('/dashboard')
-    } else {
-      setError('Email atau password salah. Silakan coba lagi.')
-    }
+    // TODO: Implement real authentication logic here.
+    // This will involve calling a backend service to verify credentials
+    // and set a session for the user.
+    // For now, we'll simulate a successful login and redirect.
+    router.push('/dashboard')
   }
 
   return (
@@ -45,15 +38,6 @@ export default function LoginPage() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleLogin} className="grid gap-4">
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Login Gagal</AlertTitle>
-              <AlertDescription>
-                {error}
-              </AlertDescription>
-            </Alert>
-          )}
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
