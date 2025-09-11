@@ -28,6 +28,10 @@ export default function LaporanPage() {
     });
   };
 
+  const getInitials = (name = '') => {
+    return name.split(' ').map(n => n[0]).join('');
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <Header title="Laporan">
@@ -51,6 +55,7 @@ export default function LaporanPage() {
                             <TableHead>Leasing / BPKB</TableHead>
                             <TableHead>Jatuh Tempo Leasing</TableHead>
                             <TableHead>Jatuh Tempo Pendana</TableHead>
+                            <TableHead>Pendana</TableHead>
                             <TableHead className="text-right">Status</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -61,6 +66,7 @@ export default function LaporanPage() {
                                 <TableCell>{debtor.leasingBpkb || '-'}</TableCell>
                                 <TableCell>{formatDate(debtor.dueDate)}</TableCell>
                                 <TableCell>{formatDate(debtor.funderDueDate)}</TableCell>
+                                <TableCell>{getInitials(debtor.funder)}</TableCell>
                                 <TableCell className="text-right">
                                     <Badge
                                         className={cn(
