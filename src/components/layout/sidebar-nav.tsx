@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -15,7 +16,6 @@ import {
   Gem,
   MessageSquare,
   Settings,
-  BookText,
   LogOut,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -29,7 +29,6 @@ import { useRouter } from 'next/navigation';
 const links = [
   { href: '/dashboard', label: 'Dasbor', icon: LayoutDashboard },
   { href: '/debtors', label: 'Debitur', icon: Users },
-  { href: '/laporan', label: 'Laporan', icon: BookText },
   { href: '/collateral', label: 'Agunan', icon: Gem },
   { href: '/notifications', label: 'Notifikasi', icon: MessageSquare },
   { href: '/settings', label: 'Pengaturan', icon: Settings },
@@ -63,7 +62,7 @@ export function SidebarNav() {
             <SidebarMenuItem key={link.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === link.href}
+                isActive={pathname.startsWith(link.href)}
                 tooltip={{children: link.label}}
               >
                 <Link href={link.href}>
