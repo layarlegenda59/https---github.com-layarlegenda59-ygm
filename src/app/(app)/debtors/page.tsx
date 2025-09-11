@@ -157,14 +157,16 @@ export default function DebtorsPage() {
   return (
     <div className="flex flex-col gap-8">
       <Header title="Debitur">
-        <Button variant="outline">
-          <FileUp className="mr-2 h-4 w-4" />
-          Impor Data
-        </Button>
-        <Button onClick={handleAddDebtor}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Tambah Debitur
-        </Button>
+        <>
+          <Button variant="outline">
+            <FileUp className="mr-2 h-4 w-4" />
+            Impor Data
+          </Button>
+          <Button onClick={handleAddDebtor}>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Tambah Debitur
+          </Button>
+        </>
       </Header>
       <main className="space-y-8">
         <Card>
