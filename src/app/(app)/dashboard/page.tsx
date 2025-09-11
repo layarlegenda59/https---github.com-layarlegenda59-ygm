@@ -3,6 +3,7 @@ import { StatsCards } from "@/components/dashboard/stats-cards";
 import { UpcomingDues } from "@/components/dashboard/upcoming-dues";
 import { DebtOverviewChart } from "@/components/dashboard/debt-overview-chart";
 import { supabase } from "@/lib/supabase/client";
+import { NotificationBell } from "@/components/dashboard/notification-bell";
 
 async function getDebtorData() {
     const { data, error } = await supabase.from('debtors').select('*');
@@ -18,7 +19,9 @@ export default async function DashboardPage() {
   const debtors = await getDebtorData();
   return (
     <div className="flex flex-col gap-8">
-      <Header title="Dasbor" />
+      <Header title="Dasbor">
+        <NotificationBell debtors={debtors} />
+      </Header>
       <main className="space-y-6">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCards debtors={debtors} />
