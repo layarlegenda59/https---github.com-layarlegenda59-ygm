@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -33,10 +34,13 @@ import { Calendar } from '../ui/calendar';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Nama minimal 2 karakter.'),
-  email: z.string().email('Format email tidak valid.'),
+  email: z.string().email('Format email tidak valid.').optional().or(z.literal('')),
   phone: z.string().min(10, 'Nomor telepon minimal 10 digit.'),
   totalDebt: z.coerce.number().min(0, 'Total utang tidak boleh negatif.'),
-  dueDate: z.date({ required_error: 'Tanggal jatuh tempo harus diisi.' }),
+  dueDate: z.date({ required_error: 'Tanggal jatuh tempo leasing harus diisi.' }),
+  funderDueDate: z.date({ required_error: 'Tanggal jatuh tempo pendana harus diisi.' }),
+  leasingBpkb: z.string().optional(),
+  funder: z.string().optional(),
 });
 
 type DebtorFormValues = z.infer<typeof formSchema>;
@@ -44,7 +48,7 @@ type DebtorFormValues = z.infer<typeof formSchema>;
 interface DebtorFormSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: DebtorFormValues) => void;
+  onSubmit: (data: Omit<Debtor, 'id' | 'status' | 'created_at'>) => void;
   debtor: Debtor | null;
 }
 
@@ -56,29 +60,41 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
       email: '',
       phone: '',
       totalDebt: 0,
-      dueDate: new Date(),
+      leasingBpkb: '',
+      funder: '',
     },
   });
 
   useEffect(() => {
-    if (debtor) {
-      form.reset({
-        ...debtor,
-        dueDate: new Date(debtor.dueDate),
-      });
-    } else {
-      form.reset({
-        name: '',
-        email: '',
-        phone: '',
-        totalDebt: 0,
-        dueDate: new Date(),
-      });
+    if (isOpen) {
+      if (debtor) {
+        form.reset({
+          ...debtor,
+          dueDate: new Date(debtor.dueDate),
+          funderDueDate: new Date(debtor.funderDueDate),
+        });
+      } else {
+        form.reset({
+          name: '',
+          email: '',
+          phone: '',
+          totalDebt: 0,
+          dueDate: new Date(),
+          funderDueDate: new Date(),
+          leasingBpkb: '',
+          funder: '',
+        });
+      }
     }
-  }, [debtor, form, isOpen]);
+  }, [debtor, isOpen, form]);
 
   const handleSubmit = (values: DebtorFormValues) => {
-    onSubmit(values);
+    const { dueDate, funderDueDate, ...rest } = values;
+    onSubmit({
+      ...rest,
+      dueDate: dueDate.toISOString(),
+      funderDueDate: funderDueDate.toISOString(),
+    });
   };
   
   const title = debtor ? 'Ubah Debitur' : 'Tambah Debitur Baru';
@@ -93,7 +109,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
               <SheetTitle>{title}</SheetTitle>
               <SheetDescription>{description}</SheetDescription>
             </SheetHeader>
-            <div className="flex-1 overflow-y-auto py-6 space-y-4">
+            <div className="flex-1 overflow-y-auto py-6 space-y-4 pr-6">
               <FormField
                 control={form.control}
                 name="name"
@@ -151,7 +167,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
                 name="dueDate"
                 render={({ field }) => (
                     <FormItem className="flex flex-col">
-                    <FormLabel>Tanggal Jatuh Tempo</FormLabel>
+                    <FormLabel>Jatuh Tempo Leasing</FormLabel>
                     <Popover>
                         <PopoverTrigger asChild>
                         <FormControl>
@@ -184,6 +200,71 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
                     <FormMessage />
                     </FormItem>
                 )}
+                />
+                 <FormField
+                control={form.control}
+                name="funderDueDate"
+                render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                    <FormLabel>Jatuh Tempo Pendana</FormLabel>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                        <FormControl>
+                            <Button
+                            variant={"outline"}
+                            className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                            )}
+                            >
+                            {field.value ? (
+                                format(field.value, "PPP", { locale: id })
+                            ) : (
+                                <span>Pilih tanggal</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                        </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                            locale={id}
+                        />
+                        </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="leasingBpkb"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Leasing / BPKB</FormLabel>
+                      <FormControl>
+                        <Input placeholder="cth. ACC" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="funder"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Pendana</FormLabel>
+                      <FormControl>
+                        <Input placeholder="cth. Funder A" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
             </div>
             <SheetFooter>
