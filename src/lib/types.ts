@@ -28,9 +28,10 @@ export interface NotificationLog {
   id: string;
   debtorName: string;
   type: 'upcoming' | 'due' | 'overdue';
-  channel: 'WhatsApp';
+  channel: 'WhatsApp' | 'Email' | 'SMS';
   sentAt: string;
-  status: 'success' | 'failed';
+  status: 'success' | 'failed' | 'pending';
+  created_at: string;
 }
 
 export interface Template {

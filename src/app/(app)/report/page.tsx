@@ -11,17 +11,45 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { debtors as initialDebtors } from "@/lib/data";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Debtor } from "@/lib/types";
+import { supabase } from "@/lib/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 export default function ReportPage() {
-  const [debtors] = useState<Debtor[]>(initialDebtors);
+  const [debtors, setDebtors] = useState<Debtor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const sortedReportDebtors = [...debtors].sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+  useEffect(() => {
+    const fetchDebtors = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('debtors')
+        .select('*')
+        .order('dueDate', { ascending: true });
+
+      if (error) {
+        console.error("Error fetching debtors for report:", error);
+        toast({
+          title: "Gagal memuat data",
+          description: "Tidak dapat mengambil data laporan dari server.",
+          variant: "destructive",
+        });
+      } else {
+        setDebtors(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchDebtors();
+  }, [toast]);
+
 
   const formatDate = (dateString: string) => {
+     if (!dateString) return '-';
     return new Date(dateString).toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',
@@ -30,7 +58,8 @@ export default function ReportPage() {
   };
 
   const getInitials = (name = '') => {
-    return name.split(' ').map(n => n[0]).join('');
+    if (!name) return '-';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
   }
 
   return (
@@ -56,28 +85,43 @@ export default function ReportPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {sortedReportDebtors.map((debtor) => (
-                            <TableRow key={debtor.id}>
-                                <TableCell className="font-medium">{debtor.name}</TableCell>
-                                <TableCell>{debtor.leasingBpkb || '-'}</TableCell>
-                                <TableCell>{formatDate(debtor.dueDate)}</TableCell>
-                                <TableCell>{formatDate(debtor.funderDueDate)}</TableCell>
-                                <TableCell>{getInitials(debtor.funder)}</TableCell>
-                                <TableCell className="text-right">
-                                    <Badge
-                                        className={cn(
-                                            'capitalize',
-                                            debtor.status === 'overdue' && 'bg-destructive/80 text-destructive-foreground',
-                                            debtor.status === 'due' && 'bg-yellow-400/80 text-yellow-900',
-                                            debtor.status === 'paid' && 'bg-green-400/80 text-green-900'
-                                        )}
-                                        variant="secondary"
-                                    >
-                                        {debtor.status === 'paid' ? 'Lunas' : debtor.status === 'due' ? 'Jatuh Tempo' : 'Tunggakan'}
-                                    </Badge>
-                                </TableCell>
-                            </TableRow>
-                            ))}
+                             {loading ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="h-24 text-center">
+                                        <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+                                        <span className="mt-2 block">Memuat data laporan...</span>
+                                    </TableCell>
+                                </TableRow>
+                            ) : debtors.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="h-24 text-center">
+                                    Tidak ada data untuk ditampilkan.
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                debtors.map((debtor) => (
+                                <TableRow key={debtor.id}>
+                                    <TableCell className="font-medium">{debtor.name}</TableCell>
+                                    <TableCell>{debtor.leasingBpkb || '-'}</TableCell>
+                                    <TableCell>{formatDate(debtor.dueDate)}</TableCell>
+                                    <TableCell>{formatDate(debtor.funderDueDate)}</TableCell>
+                                    <TableCell>{getInitials(debtor.funder)}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Badge
+                                            className={cn(
+                                                'capitalize',
+                                                debtor.status === 'overdue' && 'bg-destructive/80 text-destructive-foreground',
+                                                debtor.status === 'due' && 'bg-yellow-400/80 text-yellow-900',
+                                                debtor.status === 'paid' && 'bg-green-400/80 text-green-900'
+                                            )}
+                                            variant="secondary"
+                                        >
+                                            {debtor.status === 'paid' ? 'Lunas' : debtor.status === 'due' ? 'Jatuh Tempo' : 'Tunggakan'}
+                                        </Badge>
+                                    </TableCell>
+                                </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
                 </div>

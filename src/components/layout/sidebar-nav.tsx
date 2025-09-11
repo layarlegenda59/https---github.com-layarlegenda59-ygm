@@ -17,7 +17,6 @@ import {
   MessageSquare,
   Settings,
   LogOut,
-  Gem,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -25,6 +24,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { useEffect, useState } from 'react';
+import type { User } from '@supabase/supabase-js';
 
 
 const links = [
@@ -39,11 +42,38 @@ export function SidebarNav() {
   const pathname = usePathname();
   const { state, toggleSidebar } = useSidebar();
   const router = useRouter();
+  const { toast } = useToast();
+  const [user, setUser] = useState<User | null>(null);
 
-  const handleLogout = () => {
-    // In a real app, you would clear the session/token here
-    router.push('/login');
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    }
+    fetchUser();
+  }, []);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+       toast({
+        title: "Gagal Keluar",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+        router.push('/login');
+        router.refresh();
+        toast({
+            title: "Berhasil Keluar",
+            description: "Anda telah keluar dari sesi.",
+        });
+    }
   };
+
+  const getInitials = (name = '') => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  }
 
   return (
     <>
@@ -81,12 +111,12 @@ export function SidebarNav() {
       <SidebarFooter className="p-2 mt-auto border-t border-sidebar-border">
          <div className="flex items-center gap-3 p-2">
             <Avatar className="h-10 w-10 border flex-shrink-0">
-                <AvatarImage src="https://picsum.photos/100" alt="Pengguna" data-ai-hint="person portrait" />
-                <AvatarFallback>AD</AvatarFallback>
+                <AvatarImage src={`https://i.pravatar.cc/100?u=${user?.id}`} alt={user?.user_metadata?.full_name} data-ai-hint="person portrait" />
+                <AvatarFallback>{getInitials(user?.user_metadata?.full_name)}</AvatarFallback>
             </Avatar>
             <div className={cn("flex flex-col text-sm truncate transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>
-                <span className="font-semibold text-sidebar-foreground">Admin User</span>
-                <span className="text-xs text-muted-foreground">admin@dalemkaum.com</span>
+                <span className="font-semibold text-sidebar-foreground">{user?.user_metadata?.full_name || 'Pengguna'}</span>
+                <span className="text-xs text-muted-foreground">{user?.email}</span>
             </div>
             <Button variant="ghost" size="icon" className={cn("ml-auto text-muted-foreground hover:text-sidebar-foreground flex-shrink-0")} onClick={handleLogout} tooltip={{children: 'Keluar'}}>
                 <LogOut className="w-5 h-5" />

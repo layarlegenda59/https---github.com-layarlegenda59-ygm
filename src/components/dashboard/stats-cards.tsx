@@ -1,12 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Users, Gem, AlertTriangle } from "lucide-react";
-import { debtors, collaterals } from "@/lib/data";
+import { Debtor } from "@/lib/types";
 
-export function StatsCards() {
+interface StatsCardsProps {
+    debtors: Debtor[];
+}
+
+export function StatsCards({ debtors }: StatsCardsProps) {
     const totalDebt = debtors.reduce((acc, debtor) => acc + debtor.totalDebt, 0);
     const totalDebtors = debtors.length;
     const overdueCount = debtors.filter(d => d.status === 'overdue').length;
-    const totalCollateral = collaterals.length;
+    // Agunan count is not directly available, assuming it would be another query.
+    // For now, let's keep it static or based on debtors with leasing info.
+    const totalCollateral = debtors.filter(d => d.leasingBpkb).length;
 
   return (
     <>
@@ -17,7 +23,7 @@ export function StatsCards() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold font-headline">Rp{totalDebt.toLocaleString('id-ID')}</div>
-          <p className="text-xs text-muted-foreground">+2.1% dari bulan lalu</p>
+          {/* <p className="text-xs text-muted-foreground">+2.1% dari bulan lalu</p> */}
         </CardContent>
       </Card>
       <Card>
@@ -27,7 +33,7 @@ export function StatsCards() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold font-headline">{totalDebtors}</div>
-          <p className="text-xs text-muted-foreground">+3 dari bulan lalu</p>
+          {/* <p className="text-xs text-muted-foreground">+3 dari bulan lalu</p> */}
         </CardContent>
       </Card>
       <Card>
