@@ -3,7 +3,7 @@
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, FileUp, MoreHorizontal, Car, Bike } from "lucide-react";
+import { PlusCircle, FileUp, MoreHorizontal } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { debtors as initialDebtors, collaterals as initialCollaterals } from "@/lib/data";
+import { debtors as initialDebtors } from "@/lib/data";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -29,10 +29,7 @@ export default function DebtorsPage() {
   const [isDebtorFormOpen, setDebtorFormOpen] = useState(false);
   const [isDeleteDebtorDialogOpen, setDeleteDebtorDialogOpen] = useState(false);
 
-  const filteredDebtors = debtors.map(debtor => {
-    const debtorCollaterals = initialCollaterals.filter(c => c.debtorId === debtor.id);
-    return { ...debtor, collaterals: debtorCollaterals };
-  }).filter(debtor =>
+  const filteredDebtors = debtors.filter(debtor =>
     debtor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     debtor.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -95,6 +92,14 @@ export default function DebtorsPage() {
     setDebtorFormOpen(false);
     setSelectedDebtor(null);
   };
+  
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('id-ID', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -128,9 +133,9 @@ export default function DebtorsPage() {
                         <TableHeader>
                             <TableRow>
                             <TableHead>Nama</TableHead>
-                            <TableHead className="hidden md:table-cell">Jenis</TableHead>
-                            <TableHead className="hidden sm:table-cell">Deskripsi</TableHead>
-                            <TableHead className="hidden md:table-cell text-right">Nilai</TableHead>
+                            <TableHead className="hidden sm:table-cell">Kontak</TableHead>
+                            <TableHead className="hidden md:table-cell text-right">Total Utang</TableHead>
+                            <TableHead className="hidden md:table-cell">Jatuh Tempo</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead><span className="sr-only">Aksi</span></TableHead>
                             </TableRow>
@@ -139,30 +144,16 @@ export default function DebtorsPage() {
                             {filteredDebtors.map((debtor) => (
                             <TableRow key={debtor.id}>
                                 <TableCell className="font-medium">{debtor.name}</TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                    <div className="flex flex-col gap-1">
-                                        {debtor.collaterals.length > 0 ? debtor.collaterals.map(c => (
-                                            <div key={c.id} className="flex items-center gap-2">
-                                                {c.type === 'car' ? <Car className="h-5 w-5 text-muted-foreground" /> : <Bike className="h-5 w-5 text-muted-foreground" />}
-                                                <span className="capitalize">{c.type === 'car' ? 'Mobil' : 'Motor'}</span>
-                                            </div>
-                                        )) : <span className="text-muted-foreground">-</span>}
-                                    </div>
-                                </TableCell>
                                 <TableCell className="hidden sm:table-cell">
-                                     <div className="flex flex-col gap-1">
-                                        {debtor.collaterals.length > 0 ? debtor.collaterals.map(c => (
-                                            <span key={c.id}>{c.description}</span>
-                                        )) : <span className="text-muted-foreground">-</span>}
+                                    <div className="flex flex-col">
+                                        <span>{debtor.email}</span>
+                                        <span className="text-muted-foreground">{debtor.phone}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="hidden md:table-cell text-right">
-                                     <div className="flex flex-col gap-1">
-                                        {debtor.collaterals.length > 0 ? debtor.collaterals.map(c => (
-                                            <span key={c.id}>Rp{c.value.toLocaleString('id-ID')}</span>
-                                        )) : <span className="text-muted-foreground">-</span>}
-                                    </div>
+                                    Rp{debtor.totalDebt.toLocaleString('id-ID')}
                                 </TableCell>
+                                <TableCell className="hidden md:table-cell">{formatDate(debtor.dueDate)}</TableCell>
                                 <TableCell>
                                     <Badge
                                         className={cn(
