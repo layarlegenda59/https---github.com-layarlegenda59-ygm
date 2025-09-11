@@ -14,6 +14,7 @@ import {
   LayoutDashboard,
   Users,
   Gem,
+  FileText,
   MessageSquare,
   Settings,
   LogOut,
@@ -30,6 +31,7 @@ const links = [
   { href: '/dashboard', label: 'Dasbor', icon: LayoutDashboard },
   { href: '/debtors', label: 'Debitur', icon: Users },
   { href: '/collateral', label: 'Agunan', icon: Gem },
+  { href: '/report', label: 'Laporan', icon: FileText },
   { href: '/notifications', label: 'Notifikasi', icon: MessageSquare },
   { href: '/settings', label: 'Pengaturan', icon: Settings },
 ];
