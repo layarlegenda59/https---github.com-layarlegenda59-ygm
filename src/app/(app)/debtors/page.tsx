@@ -211,7 +211,10 @@ export default function DebtorsPage() {
                                 <TableCell className="hidden md:table-cell">
                                     <div className="flex flex-col gap-1">
                                         {debtor.collaterals.length > 0 ? debtor.collaterals.map(c => (
-                                            <span key={c.id} className="capitalize">{c.type === 'car' ? 'Mobil' : 'Motor'}</span>
+                                            <div key={c.id} className="flex items-center gap-2">
+                                                {c.type === 'car' ? <Car className="h-5 w-5 text-muted-foreground" /> : <Bike className="h-5 w-5 text-muted-foreground" />}
+                                                <span className="capitalize">{c.type === 'car' ? 'Mobil' : 'Motor'}</span>
+                                            </div>
                                         )) : <span className="text-muted-foreground">-</span>}
                                     </div>
                                 </TableCell>
@@ -354,5 +357,3 @@ export default function DebtorsPage() {
     </div>
   );
 }
-
-    
