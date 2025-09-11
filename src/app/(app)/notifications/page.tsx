@@ -10,7 +10,7 @@ import { useState } from "react";
 
 export default function NotificationsPage() {
   const [activeTab, setActiveTab] = useState("log");
-  
+
   return (
     <div className="flex flex-col gap-8">
       <Header title="Notifikasi" />
