@@ -24,16 +24,6 @@ export interface Collateral {
   address?: string; // For leases/property
 }
 
-export interface NotificationLog {
-  id: string;
-  debtorName: string;
-  type: 'upcoming' | 'due' | 'overdue';
-  channel: 'WhatsApp' | 'Email' | 'SMS';
-  sentAt: string;
-  status: 'success' | 'failed' | 'pending';
-  created_at: string;
-}
-
 export interface Template {
   id: string;
   name: string;
