@@ -1,3 +1,4 @@
+
 'use client'
 
 import Link from "next/link"
@@ -20,8 +21,8 @@ import { Loader2 } from "lucide-react"
 export default function LoginPage() {
   const router = useRouter()
   const { toast } = useToast()
-  const [email, setEmail] = useState('gm@admin.com');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   
   const handleLogin = async (event: React.FormEvent) => {
@@ -82,7 +83,8 @@ export default function LoginPage() {
             <Input 
               id="password" 
               type="password" 
-              required 
+              required
+              placeholder="••••••••" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
