@@ -221,6 +221,7 @@ export default function DebtorsPage() {
                         <TableHeader>
                             <TableRow>
                             <TableHead>Nama</TableHead>
+                            <TableHead className="hidden sm:table-cell">Jenis Kendaraan</TableHead>
                             <TableHead className="hidden sm:table-cell">No. Polisi</TableHead>
                             <TableHead className="hidden md:table-cell text-right">Total Utang</TableHead>
                             <TableHead className="hidden md:table-cell">Jatuh Tempo</TableHead>
@@ -231,14 +232,14 @@ export default function DebtorsPage() {
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={6} className="h-24 text-center">
+                                    <TableCell colSpan={7} className="h-24 text-center">
                                         <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
                                         <span className="mt-2 block">Memuat data...</span>
                                     </TableCell>
                                 </TableRow>
                             ) : filteredDebtors.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={6} className="h-24 text-center">
+                                    <TableCell colSpan={7} className="h-24 text-center">
                                     Tidak ada data debitur.
                                     </TableCell>
                                 </TableRow>
@@ -248,6 +249,9 @@ export default function DebtorsPage() {
                                     <TableCell>
                                         <div className="font-medium">{debtor.name}</div>
                                         <div className="text-sm text-muted-foreground">{debtor.phone}</div>
+                                    </TableCell>
+                                    <TableCell className="hidden sm:table-cell">
+                                        {debtor.vehicle_type || '-'}
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">
                                         {debtor.police_number || '-'}

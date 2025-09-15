@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, Users, Gem, AlertTriangle } from "lucide-react";
+import { DollarSign, Users, Gem, AlertTriangle, Shield } from "lucide-react";
 import { Debtor } from "@/lib/types";
 
 interface StatsCardsProps {
@@ -30,6 +30,7 @@ export function StatsCards({ debtors }: StatsCardsProps) {
     // Calculate additional metrics
     const activeDebt = debtors.filter(d => d.status !== 'paid').reduce((acc, debtor) => acc + (debtor.total_debt || 0), 0);
     const averageDebt = totalDebtors > 0 ? totalDebt / totalDebtors : 0;
+    const overdueDebt = debtors.filter(d => d.status === 'overdue').reduce((acc, debtor) => acc + (debtor.total_debt || 0), 0);
 
   return (
     <>
@@ -83,7 +84,7 @@ export function StatsCards({ debtors }: StatsCardsProps) {
         <CardContent className="pt-2">
           <div className="text-xl sm:text-2xl font-bold text-red-900 dark:text-red-100 leading-tight">{overdueCount}</div>
           <p className="text-sm sm:text-xs text-red-600 dark:text-red-400 mt-2 sm:mt-1">
-            Total utang: {formatCurrency(overdueDebt)}
+            Total utang: Rp{overdueDebt.toLocaleString('id-ID')}
           </p>
         </CardContent>
       </Card>
