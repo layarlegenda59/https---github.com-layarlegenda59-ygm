@@ -249,6 +249,9 @@ export default function DebtorsPage() {
                                     <TableCell>
                                         <div className="font-medium">{debtor.name}</div>
                                         <div className="text-sm text-muted-foreground">{debtor.phone}</div>
+                                        <div className="text-xs text-muted-foreground sm:hidden mt-1">
+                                            <span className="font-medium">Kendaraan:</span> {debtor.vehicle_type || 'Tidak tersedia'}
+                                        </div>
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">
                                         {debtor.vehicle_type || '-'}
