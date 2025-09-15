@@ -5,11 +5,16 @@ export interface Debtor {
   name: string;
   phone: string;
   email: string | null;
-  totalDebt: number;
-  dueDate: string; // Jatuh Tempo Leasing
-  funderDueDate: string; // Jatuh Tempo Pendana
-  status: 'paid' | 'due' | 'overdue';
-  leasingBpkb: string | null;
+  total_debt: number;
+  due_date: string; // Jatuh Tempo Leasing
+  funder_due_date: string; // Jatuh Tempo Pendana
+  status: 'paid' | 'due' | 'overdue' | 'takeover';
+  leasing_bpkb: string | null;
   funder: string | null;
-  policeNumber: string | null;
+  police_number: string | null;
+  stnk_number: string | null;
+  vehicle_type: string | null;
+  vehicle_color: string | null;
+  vehicle_year: number | null;
+  user_id?: string;
 }

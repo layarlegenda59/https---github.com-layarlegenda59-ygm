@@ -52,53 +52,69 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl font-headline">Masuk</CardTitle>
-        <CardDescription>
-          Masukkan email Anda di bawah untuk masuk ke akun Anda
+    <Card className="mx-auto max-w-md shadow-lg">
+      <CardHeader className="space-y-4 text-center">
+        <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <CardTitle className="text-3xl font-headline font-bold text-foreground">Selamat Datang</CardTitle>
+        <CardDescription className="text-base text-muted-foreground leading-relaxed">
+          Masuk ke sistem manajemen debitur YGM untuk mengelola data dan notifikasi dengan mudah
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleLogin} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+      <CardContent className="px-8 pb-8">
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="space-y-3">
+            <Label htmlFor="email" className="text-sm font-medium text-foreground">Alamat Email</Label>
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="nama@email.com"
+              className="h-12"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
             />
           </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link href="/" className="ml-auto inline-block text-sm underline">
-                Lupa password?
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password" className="text-sm font-medium text-foreground">Kata Sandi</Label>
+              <Link href="/" className="text-sm text-primary hover:text-primary/80 transition-colors">
+                Lupa kata sandi?
               </Link>
             </div>
             <Input 
               id="password" 
               type="password" 
               required
-              placeholder="••••••••" 
+              placeholder="Masukkan kata sandi Anda" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
+              className="h-12"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? <Loader2 className="animate-spin" /> : "Masuk"}
+          <Button type="submit" className="w-full h-12 text-base font-medium" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sedang masuk...
+              </>
+            ) : (
+              "Masuk ke Dashboard"
+            )}
           </Button>
         </form>
-        <div className="mt-4 text-center text-sm">
-          Belum punya akun?{' '}
-          <Link href="/signup" className="underline">
-            Daftar
-          </Link>
+        <div className="mt-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            Belum memiliki akun?{' '}
+            <Link href="/signup" className="font-medium text-primary hover:text-primary/80 transition-colors">
+              Daftar sekarang
+            </Link>
+          </p>
         </div>
       </CardContent>
     </Card>

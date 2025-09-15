@@ -29,7 +29,7 @@ export default function ReportPage() {
       const { data, error } = await supabase
         .from('debtors')
         .select('*')
-        .order('dueDate', { ascending: true });
+        .order('due_date', { ascending: true });
 
       if (error) {
         console.error("Error fetching debtors for report:", error);
@@ -102,10 +102,10 @@ export default function ReportPage() {
                                 debtors.map((debtor) => (
                                 <TableRow key={debtor.id}>
                                     <TableCell className="font-medium">{debtor.name}</TableCell>
-                                    <TableCell>{debtor.leasingBpkb || '-'}</TableCell>
-                                    <TableCell>{formatDate(debtor.dueDate)}</TableCell>
-                                    <TableCell>{formatDate(debtor.funderDueDate)}</TableCell>
-                                    <TableCell>{getInitials(debtor.funder)}</TableCell>
+                                    <TableCell>{debtor.leasing_bpkb || '-'}</TableCell>
+                                    <TableCell>{formatDate(debtor.due_date)}</TableCell>
+                                    <TableCell>{formatDate(debtor.funder_due_date)}</TableCell>
+                                    <TableCell>{getInitials(debtor.funder || '')}</TableCell>
                                     <TableCell className="text-right">
                                         <Badge
                                             className={cn(

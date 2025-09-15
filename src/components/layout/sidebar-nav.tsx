@@ -16,6 +16,8 @@ import {
   FileText,
   Settings,
   LogOut,
+  TrendingUp,
+  AlertCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -42,13 +44,25 @@ export function SidebarNav() {
   const router = useRouter();
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
+  const [debtorStats, setDebtorStats] = useState({ total: 0, overdue: 0 });
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data.user);
     }
+    
+    const fetchDebtorStats = async () => {
+      const { data } = await supabase.from('debtors').select('status');
+      if (data) {
+        const total = data.length;
+        const overdue = data.filter(d => d.status === 'overdue').length;
+        setDebtorStats({ total, overdue });
+      }
+    }
+    
     fetchUser();
+    fetchDebtorStats();
   }, []);
 
   const handleLogout = async () => {
@@ -92,14 +106,22 @@ export function SidebarNav() {
               <SidebarMenuButton
                 asChild
                 isActive={pathname.startsWith(link.href)}
-                tooltip={{children: link.label}}
+                tooltip={link.label}
               >
-                <Link href={link.href}>
+                <Link href={link.href} className="relative">
                   <link.icon className={cn(
                       'transition-transform duration-300 ease-in-out',
                       state === 'expanded' ? 'group-hover:rotate-[10deg]' : ''
                     )} />
                   <span>{link.label}</span>
+                  {link.href === '/debtors' && debtorStats.total > 0 && (
+                    <span className="ml-auto text-xs bg-primary text-primary-foreground rounded-full px-2 py-1 min-w-[20px] text-center">
+                      {debtorStats.total}
+                    </span>
+                  )}
+                  {link.href === '/debtors' && debtorStats.overdue > 0 && (
+                    <span className="absolute -top-1 -right-1 h-3 w-3 bg-destructive rounded-full border-2 border-sidebar-background"></span>
+                  )}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -116,7 +138,7 @@ export function SidebarNav() {
                 <span className="font-semibold text-sidebar-foreground">{user?.user_metadata?.full_name || 'Pengguna'}</span>
                 <span className="text-xs text-muted-foreground">{user?.email}</span>
             </div>
-            <Button variant="ghost" size="icon" className={cn("ml-auto text-muted-foreground hover:text-sidebar-foreground flex-shrink-0")} onClick={handleLogout} tooltip={{children: 'Keluar'}}>
+            <Button variant="ghost" size="icon" className={cn("ml-auto text-muted-foreground hover:text-sidebar-foreground flex-shrink-0")} onClick={handleLogout} title="Keluar">
                 <LogOut className="w-5 h-5" />
             </Button>
          </div>

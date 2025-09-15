@@ -7,53 +7,82 @@ interface StatsCardsProps {
 }
 
 export function StatsCards({ debtors }: StatsCardsProps) {
-    const totalDebt = debtors.reduce((acc, debtor) => acc + debtor.totalDebt, 0);
+    // Calculate real statistics from user input data
+    const totalDebt = debtors.reduce((acc, debtor) => acc + (debtor.total_debt || 0), 0);
     const totalDebtors = debtors.length;
+    const paidCount = debtors.filter(d => d.status === 'paid').length;
+    const dueCount = debtors.filter(d => d.status === 'due').length;
     const overdueCount = debtors.filter(d => d.status === 'overdue').length;
-    // Agunan count is not directly available, assuming it would be another query.
-    // For now, let's keep it static or based on debtors with leasing info.
-    const totalCollateral = debtors.filter(d => d.leasingBpkb).length;
+    const takeoverCount = debtors.filter(d => d.status === 'takeover').length;
+    
+    // Count actual vehicles/collateral from user input
+    const totalCollateral = debtors.filter(d => 
+        d.vehicle_type || 
+        d.police_number || 
+        d.stnk_number ||
+        d.leasing_bpkb
+    ).length;
+    
+    // Calculate additional metrics
+    const activeDebt = debtors.filter(d => d.status !== 'paid').reduce((acc, debtor) => acc + (debtor.total_debt || 0), 0);
+    const averageDebt = totalDebtors > 0 ? totalDebt / totalDebtors : 0;
 
   return (
     <>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Utang</CardTitle>
-          <DollarSign className="h-4 w-4 text-muted-foreground" />
+      <Card className="hover:shadow-md transition-shadow">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <CardTitle className="text-sm font-medium text-muted-foreground">Total Utang</CardTitle>
+          <div className="p-2 bg-primary/10 rounded-full">
+            <DollarSign className="h-4 w-4 text-primary" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold font-headline">Rp{totalDebt.toLocaleString('id-ID')}</div>
-          {/* <p className="text-xs text-muted-foreground">+2.1% dari bulan lalu</p> */}
+        <CardContent className="pt-0">
+          <div className="text-3xl font-bold font-headline text-foreground">Rp{totalDebt.toLocaleString('id-ID')}</div>
+          <p className="text-xs text-muted-foreground mt-2">
+            {totalDebtors > 0 ? `Dari ${totalDebtors} debitur` : 'Belum ada data'}
+          </p>
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Debitur Aktif</CardTitle>
-          <Users className="h-4 w-4 text-muted-foreground" />
+      <Card className="hover:shadow-md transition-shadow">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <CardTitle className="text-sm font-medium text-muted-foreground">Debitur Aktif</CardTitle>
+          <div className="p-2 bg-accent/10 rounded-full">
+            <Users className="h-4 w-4 text-accent" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold font-headline">{totalDebtors}</div>
-          {/* <p className="text-xs text-muted-foreground">+3 dari bulan lalu</p> */}
+        <CardContent className="pt-0">
+          <div className="text-3xl font-bold font-headline text-foreground">{totalDebtors}</div>
+          <p className="text-xs text-muted-foreground mt-2">
+            {paidCount} lunas • {dueCount} jatuh tempo • {overdueCount} menunggak • {takeoverCount} take over
+          </p>
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Jumlah Agunan</CardTitle>
-          <Gem className="h-4 w-4 text-muted-foreground" />
+      <Card className="hover:shadow-md transition-shadow">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <CardTitle className="text-sm font-medium text-muted-foreground">Jumlah Agunan</CardTitle>
+          <div className="p-2 bg-blue-500/10 rounded-full">
+            <Gem className="h-4 w-4 text-blue-600" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold font-headline">{totalCollateral}</div>
-          <p className="text-xs text-muted-foreground">Total aset dijaminkan</p>
+        <CardContent className="pt-0">
+          <div className="text-3xl font-bold font-headline text-foreground">{totalCollateral}</div>
+          <p className="text-xs text-muted-foreground mt-2">
+            {totalCollateral > 0 ? `Kendaraan & aset lainnya` : 'Belum ada agunan'}
+          </p>
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Akun Menunggak</CardTitle>
-          <AlertTriangle className="h-4 w-4 text-destructive" />
+      <Card className="hover:shadow-md transition-shadow border-destructive/20">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <CardTitle className="text-sm font-medium text-muted-foreground">Akun Menunggak</CardTitle>
+          <div className="p-2 bg-destructive/10 rounded-full">
+            <AlertTriangle className="h-4 w-4 text-destructive" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold font-headline text-destructive">{overdueCount}</div>
-          <p className="text-xs text-muted-foreground">Butuh perhatian segera</p>
+        <CardContent className="pt-0">
+          <div className="text-3xl font-bold font-headline text-destructive">{overdueCount}</div>
+          <p className="text-xs text-muted-foreground mt-2">
+            {overdueCount > 0 ? `Rp${activeDebt.toLocaleString('id-ID')} total tunggakan` : 'Tidak ada tunggakan'}
+          </p>
         </CardContent>
       </Card>
     </>

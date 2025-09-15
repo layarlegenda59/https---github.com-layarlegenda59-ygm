@@ -22,51 +22,67 @@ const chartConfig = {
   },
   paid: {
     label: "Lunas",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1))",
   },
   due: {
     label: "Jatuh Tempo",
-    color: "hsl(var(--chart-4))",
+    color: "hsl(var(--chart-2))",
   },
   overdue: {
     label: "Tunggakan",
-    color: "hsl(var(--destructive))",
+    color: "hsl(var(--chart-3))",
+  },
+  takeover: {
+    label: "Take Over",
+    color: "hsl(var(--chart-4))",
   },
 }
 
 interface DebtOverviewChartProps {
-    debtors: Debtor[];
+  debtors: Debtor[];
 }
 
 export function DebtOverviewChart({ debtors }: DebtOverviewChartProps) {
-    const chartData = debtors.reduce((acc, debtor) => {
-        const statusMap: { [key: string]: string } = {
-            paid: 'Lunas',
-            due: 'Jatuh Tempo',
-            overdue: 'Tunggakan'
-        };
-        const status = statusMap[debtor.status];
-        const existing = acc.find(item => item.name === status);
-        if (existing) {
-            existing.total += debtor.totalDebt;
-        } else {
-            acc.push({ name: status, total: debtor.totalDebt, fill: `var(--color-${debtor.status})` });
-        }
-        return acc;
-    }, [] as { name: string, total: number, fill: string }[]);
+  const paidTotal = debtors
+    .filter(d => d.status === 'paid')
+    .reduce((acc, d) => acc + d.total_debt, 0);
+
+  const dueTotal = debtors
+    .filter(d => d.status === 'due')
+    .reduce((acc, d) => acc + d.total_debt, 0);
+
+  const overdueTotal = debtors
+    .filter(d => d.status === 'overdue')
+    .reduce((acc, d) => acc + d.total_debt, 0);
+
+  const takeoverTotal = debtors
+    .filter(d => d.status === 'takeover')
+    .reduce((acc, d) => acc + d.total_debt, 0);
+
+  const chartData = [
+    { status: 'Lunas', total: paidTotal, fill: 'hsl(var(--chart-1))' },
+    { status: 'Jatuh Tempo', total: dueTotal, fill: 'hsl(var(--chart-2))' },
+    { status: 'Tunggakan', total: overdueTotal, fill: 'hsl(var(--chart-3))' },
+    { status: 'Take Over', total: takeoverTotal, fill: 'hsl(var(--chart-4))' }
+  ].filter(item => item.total > 0);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="font-headline">Ringkasan Utang</CardTitle>
-        <CardDescription>Ringkasan total utang berdasarkan status.</CardDescription>
+        <CardDescription>
+          {debtors.length > 0 
+            ? `Data dari ${debtors.length} debitur yang diinput` 
+            : 'Belum ada data debitur'
+          }
+        </CardDescription>
       </CardHeader>
       <CardContent>
          {debtors.length > 0 ? (
             <ChartContainer config={chartConfig} className="h-[300px] w-full">
             <BarChart accessibilityLayer data={chartData} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
                 <XAxis
-                dataKey="name"
+                dataKey="status"
                 stroke="hsl(var(--foreground))"
                 fontSize={12}
                 tickLine={false}
@@ -88,7 +104,10 @@ export function DebtOverviewChart({ debtors }: DebtOverviewChartProps) {
             </ChartContainer>
          ) : (
             <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                Tidak ada data untuk ditampilkan.
+                <div className="text-center">
+                    <p className="text-lg font-medium">Belum ada data debitur</p>
+                    <p className="text-sm mt-2">Tambahkan debitur pertama untuk melihat grafik</p>
+                </div>
             </div>
          )}
       </CardContent>

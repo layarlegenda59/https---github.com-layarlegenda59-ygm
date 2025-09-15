@@ -19,12 +19,12 @@ export function NotificationBell({ debtors }: NotificationBellProps) {
   const notifications = debtors
     .filter((debtor) => {
       if (debtor.status === 'paid') return false;
-      const dueDate = parseISO(debtor.dueDate);
+      const dueDate = parseISO(debtor.due_date);
       const daysUntilDue = differenceInDays(dueDate, today);
       // Tampilkan jika sudah lewat jatuh tempo (overdue) atau akan jatuh tempo dalam 3 hari.
       return daysUntilDue <= 3;
     })
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+    .sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
 
   const notificationCount = notifications.length;
   
@@ -69,7 +69,7 @@ export function NotificationBell({ debtors }: NotificationBellProps) {
                                 <div className="text-sm">
                                     <p className="font-medium">{debtor.name}</p>
                                     <p className="text-muted-foreground">
-                                        {getNotificationText(debtor.dueDate)}
+                                        {getNotificationText(debtor.due_date)}
                                     </p>
                                 </div>
                             </div>

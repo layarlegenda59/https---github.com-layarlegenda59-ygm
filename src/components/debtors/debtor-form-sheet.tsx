@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Form,
   FormControl,
@@ -13,7 +12,15 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import {
   Sheet,
   SheetContent,
@@ -34,14 +41,18 @@ import { Calendar } from '../ui/calendar';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Nama minimal 2 karakter.'),
-  email: z.string().email('Format email tidak valid.').optional().or(z.literal('')),
   phone: z.string().min(10, 'Nomor telepon minimal 10 digit.'),
-  policeNumber: z.string().optional(),
-  totalDebt: z.coerce.number().min(0, 'Total utang tidak boleh negatif.'),
-  dueDate: z.date({ required_error: 'Tanggal jatuh tempo leasing harus diisi.' }),
-  funderDueDate: z.date({ required_error: 'Tanggal jatuh tempo pendana harus diisi.' }),
-  leasingBpkb: z.string().optional(),
-  funder: z.string().optional(),
+  police_number: z.string().nullable().optional(),
+  stnk_number: z.string().nullable().optional(),
+  vehicle_type: z.string().nullable().optional(),
+  vehicle_color: z.string().nullable().optional(),
+  vehicle_year: z.coerce.number().nullable().optional(),
+  total_debt: z.coerce.number().min(0, 'Total utang tidak boleh negatif.'),
+  due_date: z.date({ required_error: 'Tanggal jatuh tempo leasing harus diisi.' }),
+  funder_due_date: z.date({ required_error: 'Tanggal jatuh tempo pendana harus diisi.' }),
+  leasing_bpkb: z.string().nullable().optional(),
+  funder: z.string().nullable().optional(),
+  status: z.enum(['paid', 'due', 'overdue', 'takeover']),
 });
 
 type DebtorFormValues = z.infer<typeof formSchema>;
@@ -49,7 +60,7 @@ type DebtorFormValues = z.infer<typeof formSchema>;
 interface DebtorFormSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: Omit<Debtor, 'id' | 'status' | 'created_at'>) => void;
+  onSubmit: (data: Omit<Debtor, 'id' | 'created_at'>) => void;
   debtor: Debtor | null;
 }
 
@@ -58,12 +69,18 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      email: '',
       phone: '',
-      policeNumber: '',
-      totalDebt: 0,
-      leasingBpkb: '',
+      police_number: '',
+      stnk_number: '',
+      vehicle_type: '',
+      vehicle_color: '',
+      vehicle_year: null,
+      total_debt: 0,
+      due_date: new Date(),
+      funder_due_date: new Date(),
+      leasing_bpkb: '',
       funder: '',
+      status: 'due',
     },
   });
 
@@ -72,32 +89,49 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
       if (debtor) {
         form.reset({
           ...debtor,
-          policeNumber: debtor.policeNumber || '',
-          dueDate: new Date(debtor.dueDate),
-          funderDueDate: new Date(debtor.funderDueDate),
+          police_number: debtor.police_number || '',
+          stnk_number: debtor.stnk_number || '',
+          vehicle_type: debtor.vehicle_type || '',
+          vehicle_color: debtor.vehicle_color || '',
+          vehicle_year: debtor.vehicle_year || null,
+          due_date: new Date(debtor.due_date),
+          funder_due_date: new Date(debtor.funder_due_date),
+          status: debtor.status,
         });
       } else {
         form.reset({
           name: '',
-          email: '',
           phone: '',
-          policeNumber: '',
-          totalDebt: 0,
-          dueDate: new Date(),
-          funderDueDate: new Date(),
-          leasingBpkb: '',
+          police_number: '',
+          stnk_number: '',
+          vehicle_type: '',
+          vehicle_color: '',
+          vehicle_year: null,
+          total_debt: 0,
+          due_date: new Date(),
+          funder_due_date: new Date(),
+          leasing_bpkb: '',
           funder: '',
+          status: 'due',
         });
       }
     }
   }, [debtor, isOpen, form]);
 
   const handleSubmit = (values: DebtorFormValues) => {
-    const { dueDate, funderDueDate, ...rest } = values;
+    const { due_date, funder_due_date, ...rest } = values;
     onSubmit({
       ...rest,
-      dueDate: dueDate.toISOString(),
-      funderDueDate: funderDueDate.toISOString(),
+      email: null, // Set email to null since we removed the field
+      police_number: rest.police_number || null,
+      stnk_number: rest.stnk_number || null,
+      vehicle_type: rest.vehicle_type || null,
+      vehicle_color: rest.vehicle_color || null,
+      vehicle_year: rest.vehicle_year || null,
+      leasing_bpkb: rest.leasing_bpkb || null,
+      funder: rest.funder || null,
+      due_date: due_date.toISOString(),
+      funder_due_date: funder_due_date.toISOString(),
     });
   };
   
@@ -129,19 +163,6 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
               />
               <FormField
                 control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="cth. john.doe@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
@@ -155,12 +176,64 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
               />
                <FormField
                 control={form.control}
-                name="policeNumber"
+                name="police_number"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>No. Polisi</FormLabel>
                     <FormControl>
-                      <Input placeholder="cth. B 1234 ABC" {...field} />
+                      <Input placeholder="cth. B 1234 ABC" {...field} value={field.value || ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="stnk_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>No. STNK</FormLabel>
+                    <FormControl>
+                      <Input placeholder="cth. 1234567890123456" {...field} value={field.value || ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="vehicle_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Jenis Kendaraan</FormLabel>
+                    <FormControl>
+                      <Input placeholder="cth. Honda Beat, Toyota Avanza" {...field} value={field.value || ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="vehicle_color"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Warna Kendaraan</FormLabel>
+                    <FormControl>
+                      <Input placeholder="cth. Hitam, Putih, Merah" {...field} value={field.value || ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="vehicle_year"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tahun Kendaraan</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="cth. 2020" {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,12 +241,21 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
               />
                <FormField
                 control={form.control}
-                name="totalDebt"
+                name="total_debt"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Total Utang (Rp)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="cth. 500000" {...field} />
+                      <Input 
+                        type="text" 
+                        placeholder="cth. 500,000" 
+                        {...field}
+                        value={field.value ? field.value.toLocaleString('id-ID') : ''}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^\d]/g, '');
+                          field.onChange(value ? parseInt(value) : 0);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -181,7 +263,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
               />
                <FormField
                 control={form.control}
-                name="dueDate"
+                name="due_date"
                 render={({ field }) => (
                     <FormItem className="flex flex-col">
                     <FormLabel>Jatuh Tempo Leasing</FormLabel>
@@ -220,7 +302,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
                 />
                  <FormField
                 control={form.control}
-                name="funderDueDate"
+                name="funder_due_date"
                 render={({ field }) => (
                     <FormItem className="flex flex-col">
                     <FormLabel>Jatuh Tempo Pendana</FormLabel>
@@ -259,12 +341,12 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
                 />
                  <FormField
                   control={form.control}
-                  name="leasingBpkb"
+                  name="leasing_bpkb"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Leasing / BPKB</FormLabel>
                       <FormControl>
-                        <Input placeholder="cth. ACC" {...field} />
+                        <Input placeholder="cth. ACC" {...field} value={field.value || ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -277,12 +359,35 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
                     <FormItem>
                       <FormLabel>Pendana</FormLabel>
                       <FormControl>
-                        <Input placeholder="cth. Funder A" {...field} />
+                        <Input placeholder="cth. Funder A" {...field} value={field.value || ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pilih status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="paid">Lunas</SelectItem>
+                        <SelectItem value="due">Jatuh Tempo</SelectItem>
+                        <SelectItem value="overdue">Tunggakan</SelectItem>
+                        <SelectItem value="takeover">Take Over</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
             <SheetFooter>
                 <SheetClose asChild>

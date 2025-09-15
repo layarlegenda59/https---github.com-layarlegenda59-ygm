@@ -1,9 +1,21 @@
-
 'use client';
-import { Header } from "@/components/layout/header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, MoreHorizontal, Loader2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -12,16 +24,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { MoreHorizontal, Plus, Search, PlusCircle, Loader2 } from "lucide-react";
+import { Header } from "@/components/layout/header";
 import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase/client";
 import { Debtor } from "@/lib/types";
 import { DebtorFormSheet } from "@/components/debtors/debtor-form-sheet";
 import { DeleteDebtorDialog } from "@/components/debtors/delete-debtor-dialog";
-import { supabase } from "@/lib/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 export default function DebtorsPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,7 +72,7 @@ export default function DebtorsPage() {
   const filteredDebtors = debtors.filter(debtor =>
     debtor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (debtor.email && debtor.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (debtor.policeNumber && debtor.policeNumber.toLowerCase().includes(searchTerm.toLowerCase()))
+    (debtor.police_number && debtor.police_number.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleAddDebtor = () => {
@@ -102,24 +115,30 @@ export default function DebtorsPage() {
     }
   };
 
-  const handleDebtorFormSubmit = async (debtorData: Omit<Debtor, 'id' | 'created_at'>) => {
-    const dueDate = new Date(debtorData.dueDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    let status: Debtor['status'] = 'due';
-    if (debtorData.totalDebt === 0) {
-        status = 'paid';
-    } else if (dueDate < today) {
-        status = 'overdue';
+  const handleStatusChange = async (debtorId: string, newStatus: Debtor['status']) => {
+    const { error } = await supabase
+      .from('debtors')
+      .update({ status: newStatus })
+      .eq('id', debtorId);
+
+    if (error) {
+      toast({
+        title: "Gagal mengubah status",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Status berhasil diubah",
+        description: "Status debitur telah diperbarui.",
+      });
+      await fetchDebtors();
     }
+  };
 
-    const { policeNumber, ...restData } = debtorData;
-
+  const handleDebtorFormSubmit = async (debtorData: Omit<Debtor, 'id' | 'created_at'>) => {
     const dataToSubmit = { 
-        ...restData, 
-        status, 
-        police_number: policeNumber 
+        ...debtorData
     };
     
     if (selectedDebtor) {
@@ -136,10 +155,22 @@ export default function DebtorsPage() {
         toast({ title: "Berhasil", description: "Data debitur telah diperbarui." });
       }
     } else {
-      // Create
+      // Create - Get current user and add user_id
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({ title: "Error", description: "User tidak terautentikasi", variant: "destructive" });
+        return;
+      }
+
+      const dataWithUserId = {
+        ...dataToSubmit,
+        user_id: user.id
+      };
+
       const { error } = await supabase
         .from('debtors')
-        .insert([dataToSubmit]);
+        .insert([dataWithUserId]);
 
       if (error) {
         console.error('Insert error:', error);
@@ -219,24 +250,27 @@ export default function DebtorsPage() {
                                         <div className="text-sm text-muted-foreground">{debtor.phone}</div>
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">
-                                        {debtor.policeNumber || '-'}
+                                        {debtor.police_number || '-'}
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell text-right">
-                                        Rp{debtor.totalDebt.toLocaleString('id-ID')}
+                                        Rp{debtor.total_debt.toLocaleString('id-ID')}
                                     </TableCell>
-                                    <TableCell className="hidden md:table-cell">{formatDate(debtor.dueDate)}</TableCell>
+                                    <TableCell className="hidden md:table-cell">{formatDate(debtor.due_date)}</TableCell>
                                     <TableCell>
-                                        <Badge
-                                            className={cn(
-                                                'capitalize',
-                                                debtor.status === 'overdue' && 'bg-destructive/80 text-destructive-foreground',
-                                                debtor.status === 'due' && 'bg-yellow-400/80 text-yellow-900',
-                                                debtor.status === 'paid' && 'bg-green-400/80 text-green-900'
-                                            )}
-                                            variant="secondary"
+                                        <Select
+                                            value={debtor.status}
+                                            onValueChange={(value: Debtor['status']) => handleStatusChange(debtor.id, value)}
                                         >
-                                            {debtor.status === 'paid' ? 'Lunas' : debtor.status === 'due' ? 'Jatuh Tempo' : 'Tunggakan'}
-                                        </Badge>
+                                            <SelectTrigger className="w-32">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="paid">Lunas</SelectItem>
+                                                <SelectItem value="due">Jatuh Tempo</SelectItem>
+                                                <SelectItem value="overdue">Tunggakan</SelectItem>
+                                                <SelectItem value="takeover">Take Over</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <DropdownMenu>

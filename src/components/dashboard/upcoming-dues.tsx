@@ -19,7 +19,7 @@ interface UpcomingDuesProps {
 export function UpcomingDues({ debtors }: UpcomingDuesProps) {
   const upcoming = debtors
     .filter(d => d.status === 'due' || d.status === 'overdue')
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
+    .sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime())
     .slice(0, 5);
 
   return (
@@ -36,6 +36,7 @@ export function UpcomingDues({ debtors }: UpcomingDuesProps) {
                 <TableHead>Debitur</TableHead>
                 <TableHead className="text-right">Jumlah</TableHead>
                 <TableHead className="hidden sm:table-cell">Jatuh Tempo</TableHead>
+                <TableHead className="hidden md:table-cell">Jatuh Tempo Pendana</TableHead>
                 <TableHead className="text-right">Status</TableHead>
                 </TableRow>
             </TableHeader>
@@ -51,19 +52,25 @@ export function UpcomingDues({ debtors }: UpcomingDuesProps) {
                         <div className="font-medium">{debtor.name}</div>
                     </div>
                     </TableCell>
-                    <TableCell className="text-right">Rp{debtor.totalDebt.toLocaleString('id-ID')}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{new Date(debtor.dueDate).toLocaleDateString('id-ID')}</TableCell>
+                    <TableCell className="text-right">Rp{debtor.total_debt.toLocaleString('id-ID')}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{new Date(debtor.due_date).toLocaleDateString('id-ID')}</TableCell>
+                    <TableCell className="hidden md:table-cell">
+                        {debtor.funder_due_date ? new Date(debtor.funder_due_date).toLocaleDateString('id-ID') : '-'}
+                    </TableCell>
                     <TableCell className="text-right">
                     <Badge
                         className={cn(
                             'capitalize',
                             debtor.status === 'overdue' && 'bg-destructive/80 text-destructive-foreground',
                             debtor.status === 'due' && 'bg-yellow-400/80 text-yellow-900',
-                            debtor.status === 'paid' && 'bg-green-400/80 text-green-900'
+                            debtor.status === 'paid' && 'bg-green-400/80 text-green-900',
+                            debtor.status === 'takeover' && 'bg-blue-400/80 text-blue-900'
                         )}
                         variant="secondary"
                     >
-                        {debtor.status === 'paid' ? 'Lunas' : debtor.status === 'due' ? 'Jatuh Tempo' : 'Tunggakan'}
+                        {debtor.status === 'paid' ? 'Lunas' : 
+                         debtor.status === 'due' ? 'Jatuh Tempo' : 
+                         debtor.status === 'takeover' ? 'Take Over' : 'Tunggakan'}
                     </Badge>
                     </TableCell>
                 </TableRow>
