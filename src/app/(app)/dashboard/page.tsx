@@ -64,15 +64,15 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6 sm:gap-8">
       <Header title="Dasbor">
         <NotificationBell debtors={debtors} />
       </Header>
-      <main className="space-y-6">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <main className="space-y-6 sm:space-y-8">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCards debtors={debtors} />
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+        <div className="grid gap-6 sm:gap-8 grid-cols-1 lg:grid-cols-7">
           <div className="lg:col-span-4">
             <UpcomingDues debtors={debtors} />
           </div>

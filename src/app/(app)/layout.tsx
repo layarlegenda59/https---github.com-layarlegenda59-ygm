@@ -68,7 +68,7 @@ export default function AppLayout({
         <SidebarNav />
       </Sidebar>
       <SidebarInset>
-        <div className="p-4 lg:p-8">
+        <div className="p-4 sm:p-6 lg:p-8">
           {children}
         </div>
       </SidebarInset>

@@ -44,31 +44,31 @@ export function NotificationBell({ debtors }: NotificationBellProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
+        <Button variant="ghost" size="icon" className="relative h-10 w-10 sm:h-11 sm:w-11">
+          <Bell className="h-5 w-5 sm:h-6 sm:w-6" />
           {notificationCount > 0 && (
-            <span className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-xs text-destructive-foreground">
-              {notificationCount}
+            <span className="absolute -top-1 -right-1 flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full bg-destructive text-xs sm:text-sm text-destructive-foreground font-semibold">
+              {notificationCount > 9 ? '9+' : notificationCount}
             </span>
           )}
           <span className="sr-only">Buka notifikasi</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80">
+      <PopoverContent align="end" className="w-80 sm:w-96">
         <Card className="border-0 shadow-none">
-            <CardHeader className="p-2">
-                <CardTitle className="text-base">Notifikasi Jatuh Tempo</CardTitle>
+            <CardHeader className="p-3 sm:p-4">
+                <CardTitle className="text-lg sm:text-xl">Notifikasi Jatuh Tempo</CardTitle>
             </CardHeader>
-            <CardContent className="p-2">
+            <CardContent className="p-3 sm:p-4">
                 {notificationCount > 0 ? (
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-3">
                         {notifications.slice(0, 5).map((debtor) => (
                         <Link href="/debtors" key={debtor.id}>
-                            <div className="flex items-start gap-3 rounded-lg p-2 hover:bg-muted/50 transition-colors">
-                                <div className="mt-1 h-2 w-2 rounded-full bg-primary" />
-                                <div className="text-sm">
-                                    <p className="font-medium">{debtor.name}</p>
-                                    <p className="text-muted-foreground">
+                            <div className="flex items-start gap-3 sm:gap-4 rounded-lg p-3 hover:bg-muted/50 transition-colors">
+                                <div className="mt-1 h-3 w-3 sm:h-4 sm:w-4 rounded-full bg-primary flex-shrink-0" />
+                                <div className="text-sm sm:text-base min-w-0 flex-1">
+                                    <p className="font-medium truncate">{debtor.name}</p>
+                                    <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                                         {getNotificationText(debtor.due_date)}
                                     </p>
                                 </div>
@@ -77,7 +77,7 @@ export function NotificationBell({ debtors }: NotificationBellProps) {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-sm text-muted-foreground text-center py-4">Tidak ada notifikasi baru.</p>
+                    <p className="text-sm sm:text-base text-muted-foreground text-center py-6">Tidak ada notifikasi baru.</p>
                 )}
             </CardContent>
         </Card>

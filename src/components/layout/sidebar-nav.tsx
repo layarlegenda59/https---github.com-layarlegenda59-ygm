@@ -89,38 +89,39 @@ export function SidebarNav() {
 
   return (
     <>
-      <SidebarHeader className="p-2 md:p-3">
-        <div className={cn("p-2", state === 'expanded' ? "w-full" : "")}>
-          <Button variant="ghost" className="w-full justify-start gap-2 md:gap-3 px-2 h-12 md:h-14" onClick={toggleSidebar}>
-              <div className="p-1.5 md:p-2 bg-primary rounded-lg flex-shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground md:h-6 md:w-6"><path d="m12 19-7-7 7-7"/><path d="M19 19-7 7"/></svg>
+      <SidebarHeader className="p-3 sm:p-4">
+        <div className={cn("p-2 sm:p-3", state === 'expanded' ? "w-full" : "")}>
+          <Button variant="ghost" className="w-full justify-start gap-3 sm:gap-4 px-3 h-14 sm:h-16 text-base sm:text-lg" onClick={toggleSidebar}>
+              <div className="p-2 sm:p-2.5 bg-primary rounded-lg flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground sm:h-7 sm:w-7"><path d="m12 19-7-7 7-7"/><path d="M19 19-7 7"/></svg>
               </div>
-              <h2 className={cn("font-headline text-lg md:text-xl font-semibold text-sidebar-foreground truncate transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>YGM</h2>
+              <h2 className={cn("font-headline text-xl sm:text-2xl font-semibold text-sidebar-foreground truncate transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>YGM</h2>
           </Button>
         </div>
       </SidebarHeader>
-      <SidebarContent className="p-2">
-        <SidebarMenu>
+      <SidebarContent className="p-3 sm:p-4">
+        <SidebarMenu className="space-y-2">
           {links.map((link) => (
             <SidebarMenuItem key={link.href}>
               <SidebarMenuButton
                 asChild
                 isActive={pathname.startsWith(link.href)}
                 tooltip={link.label}
+                className="h-12 sm:h-14 text-base sm:text-lg px-3 sm:px-4 py-3 sm:py-4"
               >
-                <Link href={link.href} className="relative">
+                <Link href={link.href} className="relative flex items-center gap-3 sm:gap-4">
                   <link.icon className={cn(
-                      'transition-transform duration-300 ease-in-out',
+                      'h-5 w-5 sm:h-6 sm:w-6 transition-transform duration-300 ease-in-out flex-shrink-0',
                       state === 'expanded' ? 'group-hover:rotate-[10deg]' : ''
                     )} />
-                  <span>{link.label}</span>
+                  <span className="font-medium">{link.label}</span>
                   {link.href === '/debtors' && debtorStats.total > 0 && (
-                    <span className="ml-auto text-xs bg-primary text-primary-foreground rounded-full px-2 py-1 min-w-[20px] text-center">
+                    <span className="ml-auto text-sm sm:text-base bg-primary text-primary-foreground rounded-full px-2.5 py-1 min-w-[24px] text-center font-semibold">
                       {debtorStats.total}
                     </span>
                   )}
                   {link.href === '/debtors' && debtorStats.overdue > 0 && (
-                    <span className="absolute -top-1 -right-1 h-3 w-3 bg-destructive rounded-full border-2 border-sidebar-background"></span>
+                    <span className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 bg-destructive rounded-full border-2 border-sidebar-background"></span>
                   )}
                 </Link>
               </SidebarMenuButton>
@@ -128,18 +129,18 @@ export function SidebarNav() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-2 mt-auto border-t border-sidebar-border">
-         <div className="flex items-center gap-3 p-2">
-            <Avatar className="h-10 w-10 border flex-shrink-0">
+      <SidebarFooter className="p-3 sm:p-4 mt-auto border-t border-sidebar-border">
+         <div className="flex items-center gap-3 sm:gap-4 p-2 sm:p-3">
+            <Avatar className="h-12 w-12 sm:h-14 sm:w-14 border flex-shrink-0">
                 <AvatarImage src={`https://i.pravatar.cc/100?u=${user?.id}`} alt={user?.user_metadata?.full_name} data-ai-hint="person portrait" />
-                <AvatarFallback>{getInitials(user?.user_metadata?.full_name)}</AvatarFallback>
+                <AvatarFallback className="text-base sm:text-lg font-semibold">{getInitials(user?.user_metadata?.full_name)}</AvatarFallback>
             </Avatar>
-            <div className={cn("flex flex-col text-sm truncate transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>
-                <span className="font-semibold text-sidebar-foreground">{user?.user_metadata?.full_name || 'Pengguna'}</span>
-                <span className="text-xs text-muted-foreground">{user?.email}</span>
+            <div className={cn("flex flex-col text-base sm:text-lg truncate transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>
+                <span className="font-semibold text-sidebar-foreground leading-tight">{user?.user_metadata?.full_name || 'Pengguna'}</span>
+                <span className="text-sm sm:text-base text-muted-foreground leading-tight">{user?.email}</span>
             </div>
-            <Button variant="ghost" size="icon" className={cn("ml-auto text-muted-foreground hover:text-sidebar-foreground flex-shrink-0")} onClick={handleLogout} title="Keluar">
-                <LogOut className="w-5 h-5" />
+            <Button variant="ghost" size="icon" className={cn("ml-auto text-muted-foreground hover:text-sidebar-foreground flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12")} onClick={handleLogout} title="Keluar">
+                <LogOut className="w-5 h-5 sm:w-6 sm:h-6" />
             </Button>
          </div>
       </SidebarFooter>
