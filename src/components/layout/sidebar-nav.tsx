@@ -89,13 +89,13 @@ export function SidebarNav() {
 
   return (
     <>
-      <SidebarHeader className="p-2">
+      <SidebarHeader className="p-2 md:p-3">
         <div className={cn("p-2", state === 'expanded' ? "w-full" : "")}>
-          <Button variant="ghost" className="w-full justify-start gap-3 px-2" onClick={toggleSidebar}>
-              <div className="p-2 bg-primary rounded-lg flex-shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground h-6 w-6"><path d="m12 19-7-7 7-7"/><path d="M19 19-7 7"/></svg>
+          <Button variant="ghost" className="w-full justify-start gap-2 md:gap-3 px-2 h-12 md:h-14" onClick={toggleSidebar}>
+              <div className="p-1.5 md:p-2 bg-primary rounded-lg flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground md:h-6 md:w-6"><path d="m12 19-7-7 7-7"/><path d="M19 19-7 7"/></svg>
               </div>
-              <h2 className={cn("font-headline text-xl font-semibold text-sidebar-foreground truncate transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>YGM</h2>
+              <h2 className={cn("font-headline text-lg md:text-xl font-semibold text-sidebar-foreground truncate transition-opacity duration-200", state === 'collapsed' && 'opacity-0 w-0')}>YGM</h2>
           </Button>
         </div>
       </SidebarHeader>

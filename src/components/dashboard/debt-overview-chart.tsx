@@ -71,10 +71,13 @@ export function DebtOverviewChart({ debtors }: DebtOverviewChartProps) {
       <CardHeader>
         <CardTitle className="font-headline">Ringkasan Utang</CardTitle>
         <CardDescription>
-          {debtors.length > 0 
-            ? `Data dari ${debtors.length} debitur yang diinput` 
-            : 'Belum ada data debitur'
-          }
+          {(() => {
+            const uniqueDebtorNames = new Set(debtors.map(d => d.name.toLowerCase().trim()));
+            const uniqueCount = uniqueDebtorNames.size;
+            return uniqueCount > 0 
+              ? `Data dari ${uniqueCount} debitur yang diinput` 
+              : 'Belum ada data debitur';
+          })()}
         </CardDescription>
       </CardHeader>
       <CardContent>

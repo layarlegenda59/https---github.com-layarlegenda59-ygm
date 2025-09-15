@@ -3,7 +3,7 @@
 import { Header } from "@/components/layout/header";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { UpcomingDues } from "@/components/dashboard/upcoming-dues";
-import { DebtOverviewChart } from "@/components/dashboard/debt-overview-chart";
+import { ChartWrapper } from "@/components/dashboard/chart-wrapper";
 import { supabase } from "@/lib/supabase/client";
 import { NotificationBell } from "@/components/dashboard/notification-bell";
 import { useEffect, useState } from 'react';
@@ -69,11 +69,6 @@ export default function DashboardPage() {
         <NotificationBell debtors={debtors} />
       </Header>
       <main className="space-y-6">
-        {/* Debug info - remove in production */}
-        <div className="text-sm text-muted-foreground bg-muted p-2 rounded">
-          Debug: {debtors.length} debitur ditemukan
-        </div>
-        
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCards debtors={debtors} />
         </div>
@@ -82,7 +77,7 @@ export default function DashboardPage() {
             <UpcomingDues debtors={debtors} />
           </div>
           <div className="lg:col-span-3">
-            <DebtOverviewChart debtors={debtors}/>
+            <ChartWrapper debtors={debtors}/>
           </div>
         </div>
       </main>

@@ -50,7 +50,7 @@ export default function DebtorsPage() {
     const { data, error } = await supabase
       .from('debtors')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('funder_due_date', { ascending: true });
 
     if (error) {
       console.error("Error fetching debtors:", error);

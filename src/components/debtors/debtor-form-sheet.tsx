@@ -41,7 +41,7 @@ import { Calendar } from '../ui/calendar';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Nama minimal 2 karakter.'),
-  phone: z.string().min(10, 'Nomor telepon minimal 10 digit.'),
+  phone: z.string().optional(),
   police_number: z.string().nullable().optional(),
   stnk_number: z.string().nullable().optional(),
   vehicle_type: z.string().nullable().optional(),
@@ -123,6 +123,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
     onSubmit({
       ...rest,
       email: null, // Set email to null since we removed the field
+      phone: rest.phone || '',
       police_number: rest.police_number || null,
       stnk_number: rest.stnk_number || null,
       vehicle_type: rest.vehicle_type || null,
@@ -166,7 +167,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nomor Telepon</FormLabel>
+                    <FormLabel>Nomor Telepon <span className="text-muted-foreground font-normal">(opsional)</span></FormLabel>
                     <FormControl>
                       <Input placeholder="cth. 081234567890" {...field} />
                     </FormControl>
@@ -192,7 +193,7 @@ export function DebtorFormSheet({ isOpen, onClose, onSubmit, debtor }: DebtorFor
                 name="stnk_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>No. STNK</FormLabel>
+                    <FormLabel>No. Mesin</FormLabel>
                     <FormControl>
                       <Input placeholder="cth. 1234567890123456" {...field} value={field.value || ''} />
                     </FormControl>

@@ -29,7 +29,7 @@ export default function ReportPage() {
       const { data, error } = await supabase
         .from('debtors')
         .select('*')
-        .order('due_date', { ascending: true });
+        .order('funder_due_date', { ascending: true });
 
       if (error) {
         console.error("Error fetching debtors for report:", error);

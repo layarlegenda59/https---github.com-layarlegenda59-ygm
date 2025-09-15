@@ -9,7 +9,11 @@ interface StatsCardsProps {
 export function StatsCards({ debtors }: StatsCardsProps) {
     // Calculate real statistics from user input data
     const totalDebt = debtors.reduce((acc, debtor) => acc + (debtor.total_debt || 0), 0);
-    const totalDebtors = debtors.length;
+    
+    // Count unique debtors by name (case-insensitive)
+    const uniqueDebtorNames = new Set(debtors.map(d => d.name.toLowerCase().trim()));
+    const totalDebtors = uniqueDebtorNames.size;
+    
     const paidCount = debtors.filter(d => d.status === 'paid').length;
     const dueCount = debtors.filter(d => d.status === 'due').length;
     const overdueCount = debtors.filter(d => d.status === 'overdue').length;

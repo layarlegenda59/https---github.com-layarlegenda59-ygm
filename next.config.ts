@@ -30,6 +30,27 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    // Fix untuk Recharts dan library yang tidak kompatibel dengan SSR
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    
+    // Transpile recharts untuk kompatibilitas yang lebih baik
+    config.module.rules.push({
+      test: /\.m?js$/,
+      resolve: {
+        fullySpecified: false,
+      },
+    });
+
+    return config;
+  },
 };
 
 export default nextConfig;
