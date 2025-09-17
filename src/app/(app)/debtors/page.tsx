@@ -222,7 +222,7 @@ export default function DebtorsPage() {
                             <TableRow>
                             <TableHead>Nama</TableHead>
                             <TableHead className="hidden sm:table-cell">Jenis Kendaraan</TableHead>
-                            <TableHead className="hidden sm:table-cell">No. Polisi</TableHead>
+                            <TableHead className="hidden md:table-cell">No. Polisi</TableHead>
                             <TableHead className="hidden md:table-cell text-right">Total Utang</TableHead>
                             <TableHead className="hidden md:table-cell">Jatuh Tempo</TableHead>
                             <TableHead>Status</TableHead>
@@ -256,7 +256,7 @@ export default function DebtorsPage() {
                                     <TableCell className="hidden sm:table-cell">
                                         {debtor.vehicle_type || '-'}
                                     </TableCell>
-                                    <TableCell className="hidden sm:table-cell">
+                                    <TableCell className="hidden md:table-cell">
                                         {debtor.police_number || '-'}
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell text-right">
