@@ -16,9 +16,11 @@ import { cn } from "@/lib/utils";
 import { Debtor } from "@/lib/types";
 import { supabase } from "@/lib/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Calendar, Building, User } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function ReportPage() {
+  const isMobile = useIsMobile();
   const [debtors, setDebtors] = useState<Debtor[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -60,7 +62,62 @@ export default function ReportPage() {
   const getInitials = (name = '') => {
     if (!name) return '-';
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  }
+  };
+
+  const getStatusBadge = (status: Debtor['status']) => {
+    return (
+      <Badge
+        className={cn(
+          'capitalize',
+          status === 'overdue' && 'bg-destructive/80 text-destructive-foreground',
+          status === 'due' && 'bg-yellow-400/80 text-yellow-900',
+          status === 'paid' && 'bg-green-400/80 text-green-900',
+          status === 'takeover' && 'bg-blue-400/80 text-blue-900'
+        )}
+        variant="secondary"
+      >
+        {status === 'paid' ? 'Lunas' : 
+         status === 'due' ? 'Jatuh Tempo' : 
+         status === 'takeover' ? 'Take Over' : 'Tunggakan'}
+      </Badge>
+    );
+  };
+
+  const MobileReportCard = ({ debtor }: { debtor: Debtor }) => (
+    <Card className="mb-4">
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <User className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <div className="font-medium">{debtor.name}</div>
+              <div className="text-sm text-muted-foreground">{debtor.leasing_bpkb || '-'}</div>
+            </div>
+          </div>
+          {getStatusBadge(debtor.status)}
+        </div>
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">Jatuh Tempo Leasing:</span>
+            <span>{formatDate(debtor.due_date)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">Jatuh Tempo Pendana:</span>
+            <span>{formatDate(debtor.funder_due_date)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Building className="h-4 w-4 text-muted-foreground" />
+            <span className="font-medium">Pendana:</span>
+            <span>{debtor.funder || '-'}</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   return (
     <div className="flex flex-col gap-8">
@@ -72,59 +129,51 @@ export default function ReportPage() {
                 <CardDescription>Rincian debitur dengan tanggal jatuh tempo leasing dan pendana.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="rounded-md border">
+                {loading ? (
+                  <div className="h-24 flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <span className="ml-2">Memuat data laporan...</span>
+                  </div>
+                ) : debtors.length === 0 ? (
+                  <div className="h-24 flex items-center justify-center text-muted-foreground">
+                    Tidak ada data untuk ditampilkan.
+                  </div>
+                ) : isMobile ? (
+                  <div className="space-y-4">
+                    {debtors.map((debtor) => (
+                      <MobileReportCard key={debtor.id} debtor={debtor} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-md border">
                     <Table>
-                        <TableHeader>
-                            <TableRow>
-                            <TableHead>Nama Debitur</TableHead>
-                            <TableHead>Leasing / BPKB</TableHead>
-                            <TableHead>Jatuh Tempo Leasing</TableHead>
-                            <TableHead>Jatuh Tempo Pendana</TableHead>
-                            <TableHead>Pendana</TableHead>
-                            <TableHead className="text-right">Status</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                             {loading ? (
-                                <TableRow>
-                                    <TableCell colSpan={6} className="h-24 text-center">
-                                        <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-                                        <span className="mt-2 block">Memuat data laporan...</span>
-                                    </TableCell>
-                                </TableRow>
-                            ) : debtors.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={6} className="h-24 text-center">
-                                    Tidak ada data untuk ditampilkan.
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                debtors.map((debtor) => (
-                                <TableRow key={debtor.id}>
-                                    <TableCell className="font-medium">{debtor.name}</TableCell>
-                                    <TableCell>{debtor.leasing_bpkb || '-'}</TableCell>
-                                    <TableCell>{formatDate(debtor.due_date)}</TableCell>
-                                    <TableCell>{formatDate(debtor.funder_due_date)}</TableCell>
-                                    <TableCell>{getInitials(debtor.funder || '')}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Badge
-                                            className={cn(
-                                                'capitalize',
-                                                debtor.status === 'overdue' && 'bg-destructive/80 text-destructive-foreground',
-                                                debtor.status === 'due' && 'bg-yellow-400/80 text-yellow-900',
-                                                debtor.status === 'paid' && 'bg-green-400/80 text-green-900'
-                                            )}
-                                            variant="secondary"
-                                        >
-                                            {debtor.status === 'paid' ? 'Lunas' : debtor.status === 'due' ? 'Jatuh Tempo' : 'Tunggakan'}
-                                        </Badge>
-                                    </TableCell>
-                                </TableRow>
-                                ))
-                            )}
-                        </TableBody>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Nama Debitur</TableHead>
+                          <TableHead>Leasing / BPKB</TableHead>
+                          <TableHead>Jatuh Tempo Leasing</TableHead>
+                          <TableHead>Jatuh Tempo Pendana</TableHead>
+                          <TableHead>Pendana</TableHead>
+                          <TableHead className="text-right">Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {debtors.map((debtor) => (
+                          <TableRow key={debtor.id}>
+                            <TableCell className="font-medium">{debtor.name}</TableCell>
+                            <TableCell>{debtor.leasing_bpkb || '-'}</TableCell>
+                            <TableCell>{formatDate(debtor.due_date)}</TableCell>
+                            <TableCell>{formatDate(debtor.funder_due_date)}</TableCell>
+                            <TableCell>{getInitials(debtor.funder || '')}</TableCell>
+                            <TableCell className="text-right">
+                              {getStatusBadge(debtor.status)}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
                     </Table>
-                </div>
+                  </div>
+                )}
             </CardContent>
         </Card>
       </main>

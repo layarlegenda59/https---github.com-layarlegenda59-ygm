@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MoreHorizontal, Plus, Search, PlusCircle, Loader2 } from "lucide-react";
+import { MoreHorizontal, Plus, Search, PlusCircle, Loader2, Car, Phone, Calendar, DollarSign } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
@@ -35,6 +35,7 @@ import { DebtorFormSheet } from "@/components/debtors/debtor-form-sheet";
 import { DeleteDebtorDialog } from "@/components/debtors/delete-debtor-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function DebtorsPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -44,6 +45,7 @@ export default function DebtorsPage() {
   const [isDebtorFormOpen, setDebtorFormOpen] = useState(false);
   const [isDeleteDebtorDialogOpen, setDeleteDebtorDialogOpen] = useState(false);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const fetchDebtors = async () => {
     setLoading(true);
@@ -193,6 +195,105 @@ export default function DebtorsPage() {
     });
   };
 
+  const formatCurrency = (amount: number) => {
+    return `Rp${amount.toLocaleString('id-ID')}`;
+  };
+
+  const getStatusBadge = (status: Debtor['status']) => {
+    const statusConfig = {
+      paid: { label: 'Lunas', variant: 'default' as const, className: 'bg-green-100 text-green-800' },
+      due: { label: 'Jatuh Tempo', variant: 'secondary' as const, className: 'bg-yellow-100 text-yellow-800' },
+      overdue: { label: 'Tunggakan', variant: 'destructive' as const, className: 'bg-red-100 text-red-800' },
+      takeover: { label: 'Take Over', variant: 'outline' as const, className: 'bg-blue-100 text-blue-800' },
+    };
+    
+    const config = statusConfig[status];
+    return (
+      <Badge variant={config.variant} className={config.className}>
+        {config.label}
+      </Badge>
+    );
+  };
+
+  const MobileDebtorCard = ({ debtor }: { debtor: Debtor }) => (
+    <Card className="mb-4">
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1">
+            <h3 className="font-semibold text-lg">{debtor.name}</h3>
+            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+              <Phone className="h-3 w-3" />
+              <span>{debtor.phone}</span>
+            </div>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" variant="ghost" className="h-8 w-8">
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Buka menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Aksi Debitur</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => handleEditDebtor(debtor)}>Ubah</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleDeleteDebtor(debtor)} className="text-destructive">Hapus</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        
+        <div className="space-y-3">
+          <div className="bg-muted/50 rounded-lg p-3">
+            <h4 className="font-medium text-sm mb-2 text-muted-foreground">Informasi Debitur</h4>
+            <div className="grid grid-cols-1 gap-2 text-sm">
+              <div className="flex items-center gap-2">
+                <Car className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">Jenis Kendaraan:</span>
+                <span>{debtor.vehicle_type || 'Tidak tersedia'}</span>
+              </div>
+              {debtor.police_number && (
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">No. Polisi:</span>
+                  <span>{debtor.police_number}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">Total Utang:</span>
+                <span className="font-semibold">{formatCurrency(debtor.total_debt)}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">Jatuh Tempo:</span>
+                <span>{formatDate(debtor.due_date)}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex justify-between items-center">
+            <div>
+              <span className="text-sm text-muted-foreground">Status:</span>
+              <div className="mt-1">{getStatusBadge(debtor.status)}</div>
+            </div>
+            <Select
+              value={debtor.status}
+              onValueChange={(value: Debtor['status']) => handleStatusChange(debtor.id, value)}
+            >
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="paid">Lunas</SelectItem>
+                <SelectItem value="due">Jatuh Tempo</SelectItem>
+                <SelectItem value="overdue">Tunggakan</SelectItem>
+                <SelectItem value="takeover">Take Over</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   return (
     <div className="flex flex-col gap-8">
       <Header title="Debitur">
@@ -201,57 +302,58 @@ export default function DebtorsPage() {
               Tambah Debitur
           </Button>
       </Header>
-      <main className="space-y-8">
+      <main className="space-y-6 sm:space-y-8">
         <Card>
             <CardHeader>
-                <CardTitle className="font-headline">Informasi Debitur</CardTitle>
-                <CardDescription>Kelola data semua debitur yang terdaftar dalam sistem.</CardDescription>
+                <CardTitle className="font-headline text-xl sm:text-2xl">Informasi Debitur</CardTitle>
+                <CardDescription className="text-sm sm:text-base">Kelola data semua debitur yang terdaftar dalam sistem.</CardDescription>
                  <div className="pt-4">
                     <Input
                         placeholder="Filter berdasarkan nama, email, atau no. polisi..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="max-w-sm"
+                        className="w-full sm:max-w-sm"
                     />
                 </div>
             </CardHeader>
-            <CardContent>
-                <div className="rounded-md border">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                            <TableHead>Nama</TableHead>
-                            <TableHead className="hidden sm:table-cell">Jenis Kendaraan</TableHead>
-                            <TableHead className="hidden md:table-cell">No. Polisi</TableHead>
-                            <TableHead className="hidden md:table-cell text-right">Total Utang</TableHead>
-                            <TableHead className="hidden md:table-cell">Jatuh Tempo</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead><span className="sr-only">Aksi</span></TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {loading ? (
+            <CardContent className="px-3 sm:px-6">
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+                        <span className="text-sm text-muted-foreground">Memuat data...</span>
+                    </div>
+                ) : filteredDebtors.length === 0 ? (
+                    <div className="text-center py-12">
+                        <p className="text-muted-foreground">Tidak ada data debitur.</p>
+                    </div>
+                ) : isMobile ? (
+                    // Mobile Card Layout
+                    <div className="space-y-4">
+                        {filteredDebtors.map((debtor) => (
+                            <MobileDebtorCard key={debtor.id} debtor={debtor} />
+                        ))}
+                    </div>
+                ) : (
+                    // Desktop Table Layout
+                    <div className="rounded-md border">
+                        <Table>
+                            <TableHeader>
                                 <TableRow>
-                                    <TableCell colSpan={7} className="h-24 text-center">
-                                        <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
-                                        <span className="mt-2 block">Memuat data...</span>
-                                    </TableCell>
+                                <TableHead>Nama</TableHead>
+                                <TableHead className="hidden sm:table-cell">Jenis Kendaraan</TableHead>
+                                <TableHead className="hidden md:table-cell">No. Polisi</TableHead>
+                                <TableHead className="hidden md:table-cell text-right">Total Utang</TableHead>
+                                <TableHead className="hidden md:table-cell">Jatuh Tempo</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead><span className="sr-only">Aksi</span></TableHead>
                                 </TableRow>
-                            ) : filteredDebtors.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={7} className="h-24 text-center">
-                                    Tidak ada data debitur.
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                filteredDebtors.map((debtor) => (
+                            </TableHeader>
+                            <TableBody>
+                                {filteredDebtors.map((debtor) => (
                                 <TableRow key={debtor.id}>
                                     <TableCell>
                                         <div className="font-medium">{debtor.name}</div>
                                         <div className="text-sm text-muted-foreground">{debtor.phone}</div>
-                                        <div className="text-xs text-muted-foreground sm:hidden mt-1">
-                                            <span className="font-medium">Kendaraan:</span> {debtor.vehicle_type || 'Tidak tersedia'}
-                                        </div>
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">
                                         {debtor.vehicle_type || '-'}
@@ -260,7 +362,7 @@ export default function DebtorsPage() {
                                         {debtor.police_number || '-'}
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell text-right">
-                                        Rp{debtor.total_debt.toLocaleString('id-ID')}
+                                        {formatCurrency(debtor.total_debt)}
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell">{formatDate(debtor.due_date)}</TableCell>
                                     <TableCell>
@@ -295,11 +397,11 @@ export default function DebtorsPage() {
                                         </DropdownMenu>
                                     </TableCell>
                                 </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
             </CardContent>
         </Card>
       </main>

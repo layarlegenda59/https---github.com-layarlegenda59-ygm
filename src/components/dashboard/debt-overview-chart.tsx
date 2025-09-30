@@ -15,6 +15,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Debtor } from "@/lib/types"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const chartConfig = {
   total: {
@@ -43,6 +44,8 @@ interface DebtOverviewChartProps {
 }
 
 export function DebtOverviewChart({ debtors }: DebtOverviewChartProps) {
+  const isMobile = useIsMobile();
+  
   const paidTotal = debtors
     .filter(d => d.status === 'paid')
     .reduce((acc, d) => acc + d.total_debt, 0);
@@ -66,6 +69,9 @@ export function DebtOverviewChart({ debtors }: DebtOverviewChartProps) {
     { status: 'Take Over', total: takeoverTotal, fill: 'hsl(var(--chart-4))' }
   ].filter(item => item.total > 0);
 
+  const chartHeight = isMobile ? 'h-[250px]' : 'h-[300px]';
+  const emptyStateHeight = isMobile ? 'h-[250px]' : 'h-[300px]';
+
   return (
     <Card>
       <CardHeader>
@@ -82,21 +88,30 @@ export function DebtOverviewChart({ debtors }: DebtOverviewChartProps) {
       </CardHeader>
       <CardContent>
          {debtors.length > 0 ? (
-            <ChartContainer config={chartConfig} className="h-[300px] w-full">
-            <BarChart accessibilityLayer data={chartData} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
+            <ChartContainer config={chartConfig} className={`${chartHeight} w-full`}>
+            <BarChart 
+              accessibilityLayer 
+              data={chartData} 
+              margin={{ 
+                top: 20, 
+                right: isMobile ? 10 : 20, 
+                left: isMobile ? 10 : 20, 
+                bottom: 5 
+              }}
+            >
                 <XAxis
                 dataKey="status"
                 stroke="hsl(var(--foreground))"
-                fontSize={12}
+                fontSize={isMobile ? 10 : 12}
                 tickLine={false}
                 axisLine={false}
                 />
                 <YAxis
                 stroke="hsl(var(--foreground))"
-                fontSize={12}
+                fontSize={isMobile ? 10 : 12}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(value) => `Rp${Number(value) / 1000}k`}
+                tickFormatter={(value) => isMobile ? `${Number(value) / 1000}k` : `Rp${Number(value) / 1000}k`}
                 />
                 <ChartTooltip
                 cursor={false}
@@ -106,9 +121,9 @@ export function DebtOverviewChart({ debtors }: DebtOverviewChartProps) {
             </BarChart>
             </ChartContainer>
          ) : (
-            <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+            <div className={`${emptyStateHeight} flex items-center justify-center text-muted-foreground`}>
                 <div className="text-center">
-                    <p className="text-lg font-medium">Belum ada data debitur</p>
+                    <p className={`${isMobile ? 'text-base' : 'text-lg'} font-medium`}>Belum ada data debitur</p>
                     <p className="text-sm mt-2">Tambahkan debitur pertama untuk melihat grafik</p>
                 </div>
             </div>

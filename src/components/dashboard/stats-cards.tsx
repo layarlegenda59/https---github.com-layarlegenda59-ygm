@@ -7,8 +7,14 @@ interface StatsCardsProps {
 }
 
 export function StatsCards({ debtors }: StatsCardsProps) {
-    // Calculate real statistics from user input data
-    const totalDebt = debtors.reduce((acc, debtor) => acc + (debtor.total_debt || 0), 0);
+    // Calculate real-time total debt by excluding paid and takeover statuses
+    const totalDebt = debtors.reduce((acc, debtor) => {
+        // Exclude debt amounts for 'paid' and 'takeover' statuses
+        if (debtor.status === 'paid' || debtor.status === 'takeover') {
+            return acc;
+        }
+        return acc + (debtor.total_debt || 0);
+    }, 0);
     
     // Count unique debtors by name (case-insensitive)
     const uniqueDebtorNames = new Set(debtors.map(d => d.name.toLowerCase().trim()));
